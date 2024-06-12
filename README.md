@@ -14,3 +14,9 @@ A raw seabird hex + xml + bl to xarray/netCDF 4 and back again library
 Stretch goals:
 * Making a btl file
 * interpreting the modulo and the sample frequency to make actual timestamped time series variables
+
+> [!NOTE]
+> The name isn't final, it was quickly made during the GP17-ANT cruise
+> but not developed further on that trip. Since this will likely be the
+> base of some ODF/CCDHO/R2R CTD processing, I wanted it off my laptop
+> as the sole location. -Barna
