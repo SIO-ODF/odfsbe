@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Literal, Generator
 from pathlib import Path
 
 import numpy as np
@@ -82,3 +82,24 @@ def read_hex(path, xmlcon=(".XMLCON", ".xmlcon"), bl=(".bl", ), hdr=(".hdr", )) 
         # TODO... figure out why this file doesn't seem to be matching the hex header (line endings?), and what to do when it doesnt
 
     return ds
+
+def ds_to_hex(ds: xr.Dataset) -> Generator[bytes, None, None]:
+    """The input for this function is the output of the above (we don't have a spec yet).
+
+    When first made, this was meant to recreate the input byte for byte when moving the data across
+    a very low bandwidth network (USAP).
+
+    It works by dumping numpy to a python bytes object, dumping that to hex, uppercasing and encoding 
+    using UTF8 (ASCII in this case). The output of this is a single long string which is then
+    chunked though to split all the lines.
+    """
+    yield "\r\n".join(ds.comments.splitlines()).encode("utf8")
+    yield b"\r\n"
+    data = bytes(ds.hex.as_numpy().values).hex().upper().encode("utf8")
+    row_len = ds.dims["bytes_per_scan"] * 2
+    
+    for row in range(ds.dims["scan"]):
+        start = row * row_len
+        stop = row * row_len + row_len
+        yield data[start:stop]
+        yield b"\r\n"
