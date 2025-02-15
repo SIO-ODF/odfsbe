@@ -1,14 +1,33 @@
 from typing import Literal, Generator
 from pathlib import Path
+from hashlib import md5
 
 import numpy as np
 import xarray as xr
 
 ERRORS = Literal["store", "raise", "ignore"]
 
-def hex_to_dataset(hex:str, errors: ERRORS="raise") -> xr.Dataset:
+"""
+filename to var mapping
+*.hex -> "hex" - uint8 decoded hex data (for compression)
+*.xmlcon -> "xmlcon" - stored char data
+*.bl -> "bl" - stored char data
+*.hdr -> "hdr" stored char data
+
+each variable will have following attrs:
+"filename" - name of the input file
+"Content-MD5" - md5 hash of the input file
+"charset" -> Input text encoding for round trip
+"_Encoding" -> Set by xarray always be utf8 for char/string vars, only in the actual netCDF file
+
+The hex var gets some special attrs:
+header - the part of the file that were not hex
+"""
+
+def hex_to_dataset(path:Path, errors: ERRORS="raise", encoding="CP437") -> xr.Dataset:
     _comments = []  #   hex header comments written by deck box/SeaSave
     out = []        #   hex bytes out
+    hex = path.read_text(encoding)
 
     datalen = 0
     for lineno, line in enumerate(hex.splitlines(), start=1):
@@ -36,52 +55,69 @@ def hex_to_dataset(hex:str, errors: ERRORS="raise") -> xr.Dataset:
     data = np.array(out, dtype=np.uint8)
 
     data_array = xr.DataArray(data, dims=["scan","bytes_per_scan"])
+    data_array.attrs["header"] = header  # utf8 needs to be encoded using .attrs["charset"] when written back out
+
+    data_array.attrs["filename"] = path.name
+    data_array.attrs["Content-MD5"] = md5(path.read_bytes()).hexdigest()
+    data_array.attrs["charset"] = encoding
+
+    # Encoding is instructions for xarray
     data_array.encoding["zlib"] = True  # compress the data
     data_array.encoding["complevel"] = 6  # use compression level 6
     data_array.encoding["chunksizes"] = (60*60*24, 1) # chunk every hour of data (for 24hz data), and each column seperately
     # This is about 3~4mb chunks uncompressed depending on how many channels there are
 
     return xr.Dataset({
-        "hex": data_array  # TODO: decide on the name of this variable as we will live with it "forever", "hex" is awful, but maybe the best?
+        "hex": data_array
     },
-    attrs={
-        "hex_header": header
+    )
+
+def string_loader(path: Path, varname=None, encoding="CP437") -> xr.Dataset:
+    # This is not "read_text" to keep the same newline style as the input
+    data_array = xr.DataArray(path.read_bytes().decode(encoding))
+    data_array.attrs["filename"] = path.name
+    data_array.attrs["Content-MD5"] = md5(path.read_bytes()).hexdigest()
+    data_array.attrs["charset"] = encoding
+
+    data_array.encoding["zlib"] = True  # compress the data
+    data_array.encoding["complevel"] = 6  # use compression level 6
+    data_array.encoding["dtype"] = "S1"
+    return xr.Dataset({
+        varname: data_array
     })
 
-def read_hex(path, xmlcon=(".XMLCON", ".xmlcon"), bl=(".bl", ), hdr=(".hdr", )) -> xr.Dataset:
-    hex_path = Path(path)
-    xmlcon_path = None
-    bl_path = None
-    hdr_path = None
+def read_hex(path) -> xr.Dataset:
+    path = Path(path)
+    root = path.parent
 
-    if xmlcon is not None:
-        for suffix in xmlcon:
-            if (xmlcon_p := hex_path.with_suffix(suffix)).exists():
-                xmlcon_path = xmlcon_p
+    # this funny way of finding paths is so we don't need to care or guess about the case of the suffix/input
+    # Patches welcome if there is a better way
+    hex_path = list(root.glob(path.name, case_sensitive=False))
 
-    if bl is not None:
-        for suffix in bl:
-            if (bl_p := hex_path.with_suffix(suffix)).exists():
-                bl_path = bl_p
-    if hdr is not None:
-        for suffix in hdr:
-            if (hdr_p := hex_path.with_suffix(suffix)).exists():
-                hdr_path = hdr_p
+    xmlcon_name = Path(path.name).with_suffix(".xmlcon")
+    bl_name = Path(path.name).with_suffix(".bl")
+    hdr_name = Path(path.name).with_suffix(".hdr")
 
-    ds = hex_to_dataset(hex_path.read_text(), errors="ignore")
-    ds.attrs["hex_filename"] = hex_path.name
-    if xmlcon_path is not None:
-        ds.attrs["xmlcon_filename"] = xmlcon_path.name
-        ds.attrs["xmlcon"] = xmlcon_path.read_text()
-    if bl_path is not None:
-        ds.attrs["bl_filename"] = bl_path.name
-        ds.attrs["bl"] = bl_path.read_text()
+    xmlcon_path = list(root.glob(str(xmlcon_name), case_sensitive=False))
+    bl_path = list(root.glob(str(bl_name), case_sensitive=False))
+    hdr_path = list(root.glob(str(hdr_name), case_sensitive=False))
 
-    if hdr_path is not None:
-        ds.attrs["hdr_filename"] = hdr_path.name
-        # TODO... figure out why this file doesn't seem to be matching the hex header (line endings?), and what to do when it doesnt
+    # TODO: handle more then 1 found file for the above
 
-    return ds
+    input_datasets = []
+    if len(hex_path) == 1:
+        input_datasets.append(hex_to_dataset(hex_path[0], errors="ignore"))
+
+    if len(xmlcon_path) == 1:
+        input_datasets.append(string_loader(xmlcon_path[0], "xmlcon", encoding="CP437"))
+
+    if len(bl_path) == 1:
+        input_datasets.append(string_loader(bl_path[0], "bl", encoding="CP437"))
+
+    if len(hdr_path) == 1:
+        input_datasets.append(string_loader(hdr_path[0], "hdr", encoding="CP437"))
+
+    return xr.merge(input_datasets)
 
 def ds_to_hex(ds: xr.Dataset) -> Generator[bytes, None, None]:
     """The input for this function is the output of the above (we don't have a spec yet).
