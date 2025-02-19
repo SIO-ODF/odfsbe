@@ -141,24 +141,3 @@ def read_hex(path, errors: ERRORS = "store", content_md5=True) -> xr.Dataset:
         input_datasets.append(string_loader(hdr_path[0], "hdr", encoding="CP437", content_md5=content_md5))
 
     return xr.merge(input_datasets)
-
-def ds_to_hex(ds: xr.Dataset) -> Generator[bytes, None, None]:
-    """The input for this function is the output of the above (we don't have a spec yet).
-
-    When first made, this was meant to recreate the input byte for byte when moving the data across
-    a very low bandwidth network (USAP).
-
-    It works by dumping numpy to a python bytes object, dumping that to hex, uppercasing and encoding 
-    using UTF8 (ASCII in this case). The output of this is a single long string which is then
-    chunked though to split all the lines.
-    """
-    yield "\r\n".join(ds.comments.splitlines()).encode("utf8")
-    yield b"\r\n"
-    data = bytes(ds.hex.as_numpy().values).hex().upper().encode("utf8")
-    row_len = ds.dims["bytes_per_scan"] * 2
-    
-    for row in range(ds.dims["scan"]):
-        start = row * row_len
-        stop = row * row_len + row_len
-        yield data[start:stop]
-        yield b"\r\n"
