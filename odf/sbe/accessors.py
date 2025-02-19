@@ -1,20 +1,12 @@
 from pathlib import Path
 from os import PathLike
-from collections import ChainMap
 from hashlib import md5
+from collections import ChainMap
 
 import xarray as xr
-import numpy as np
 
 from .channels import get_frequency, get_voltage
-
-def write_path(data: bytes, path: Path, filename: str|None = None):
-    if path.is_dir():
-        with (path / filename).open("wb") as fo:
-            fo.write(data)
-    else:
-        with path.open("wb") as fo:
-            fo.write(data)
+from odf.sbe.io import write_path, string_writer
 
 
 @xr.register_dataset_accessor("sbe")
@@ -74,12 +66,24 @@ class SBEAccessor():
         
         write_path(data_out, Path(path), _hex.attrs["filename"])
 
+    def _str_to_bytes_or_file(self, var, path: str|PathLike|None = None, check=True):
+        _var = self._obj[var]
+
+        data_out = string_writer(_var, check=check)
+
+        if path is None:
+            return data_out
+        
+        write_path(data_out, Path(path), _var.attrs["filename"])
+
     def to_hdr(self, path: str|PathLike|None = None, check=True):
-        ...
+        return self._str_to_bytes_or_file("hdr", path=path, check=check)
+
     def to_xmlcon(self, path: str|PathLike|None = None, check=True):
-        ...
+        return self._str_to_bytes_or_file("xmlcon", path=path, check=check)
+
     def to_bl(self, path: str|PathLike|None = None, check=True):
-        ...
+        return self._str_to_bytes_or_file("bl", path=path, check=check)
 
     def __getattr__(self, name):
         if name.startswith("f"):
