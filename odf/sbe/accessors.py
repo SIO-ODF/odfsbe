@@ -10,13 +10,13 @@ from odf.sbe.io import write_path, string_writer
 
 
 @xr.register_dataset_accessor("sbe")
-class SBEAccessor():
+class SBEAccessor:
     def __init__(self, xarray_object: xr.Dataset):
         self._obj = xarray_object
 
-    def to_hex(self, path: str|PathLike|None = None, check=True):
+    def to_hex(self, path: str | PathLike | None = None, check=True):
         """return or write a .hex file identical to the input of read_hex
-        
+
         The output will not be identical if the errors of read_hex was not "store".
         """
         # extract the two relivant DataArrays
@@ -30,11 +30,16 @@ class SBEAccessor():
         total_scans = _hex.sizes["scan"]
         if _hex_errors is not None:
             total_scans += _hex_errors.sizes["scan_errors"]
-            error_rows = dict(zip(_hex_errors.scan_errors.values.tolist(), _hex_errors.values.tolist(), ))
+            error_rows = dict(
+                zip(
+                    _hex_errors.scan_errors.values.tolist(),
+                    _hex_errors.values.tolist(),
+                )
+            )
 
         # just prepare the header
         header = "\r\n".join(_hex.attrs["header"].splitlines())
-    
+
         # construct a dict that maps scan count to hex string
         # the hex_data is made as one big string all at once (very fast)
         # so the index/pointer math quickly slices this into rows
@@ -55,7 +60,9 @@ class SBEAccessor():
             scan = row + 1
             data_out.append(data_dict[scan])
         # The final "" here makes an empty line at the end of the file
-        data_out = "\r\n".join([header, *data_out, ""]).encode(_hex.attrs.get("charset", "utf8"))
+        data_out = "\r\n".join([header, *data_out, ""]).encode(
+            _hex.attrs.get("charset", "utf8")
+        )
         # do the output check but only if there is a Content-MD5 attr
         if check and (filehash := _hex.attrs.get("Content-MD5")) is not None:
             digest = md5(data_out).hexdigest()
@@ -63,26 +70,28 @@ class SBEAccessor():
                 raise ValueError("Output file does not match input")
         if path is None:
             return data_out
-        
+
         write_path(data_out, Path(path), _hex.attrs["filename"])
 
-    def _str_to_bytes_or_file(self, var, path: str|PathLike|None = None, check=True):
+    def _str_to_bytes_or_file(
+        self, var, path: str | PathLike | None = None, check=True
+    ):
         _var = self._obj[var]
 
         data_out = string_writer(_var, check=check)
 
         if path is None:
             return data_out
-        
+
         write_path(data_out, Path(path), _var.attrs["filename"])
 
-    def to_hdr(self, path: str|PathLike|None = None, check=True):
+    def to_hdr(self, path: str | PathLike | None = None, check=True):
         return self._str_to_bytes_or_file("hdr", path=path, check=check)
 
-    def to_xmlcon(self, path: str|PathLike|None = None, check=True):
+    def to_xmlcon(self, path: str | PathLike | None = None, check=True):
         return self._str_to_bytes_or_file("xmlcon", path=path, check=check)
 
-    def to_bl(self, path: str|PathLike|None = None, check=True):
+    def to_bl(self, path: str | PathLike | None = None, check=True):
         return self._str_to_bytes_or_file("bl", path=path, check=check)
 
     def __getattr__(self, name):
@@ -92,5 +101,5 @@ class SBEAccessor():
         elif name.startswith("v"):
             channel = int(name[1:])
             return get_voltage(self._obj.hex, channel, 0)
-        
+
         return super().__getattribute__(name)
