@@ -94,6 +94,23 @@ class SBEAccessor:
     def to_bl(self, path: str | PathLike | None = None, check=True):
         return self._str_to_bytes_or_file("bl", path=path, check=check)
 
+    def all_to_dir(self, path: str | PathLike, check=True):
+        """Write all possible output files to path
+
+        Given some path to a directory, will export all the files (hex, xmlcon, bl, hdr) using their input filenames.
+        """
+        _path = Path(path)
+        if not _path.is_dir():
+            raise ValueError(f"{path} must be a directory")
+        if "hex" in self._obj:
+            self.to_hex(_path, check=check)
+        if "xmlcon" in self._obj:
+            self.to_xmlcon(_path, check=check)
+        if "hdr" in self._obj:
+            self.to_hdr(_path, check=check)
+        if "bl" in self._obj:
+            self.to_bl(_path, check=check)
+
     def __getattr__(self, name):
         if name.startswith("f"):
             channel = int(name[1:])
