@@ -1,0 +1,46 @@
+[project]
+name = "odf.sbe"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "netcdf4>=1.7.2",
+    "xarray>=2023.3.0",
+]
+
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = [
+  "setuptools>=42",
+  "setuptools-scm>=7",
+]
+
+[tool.setuptools]
+packages = ["odf.sbe"]
+package-dir = {"" = "src"}
+
+[tool.setuptools_scm]
+fallback_version = "9999"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.9.6",
+]
+
+# taken from xarray
+[tool.ruff.lint]
+extend-select = [
+  "F",    # Pyflakes
+  "E",    # pycodestyle errors
+  "W",    # pycodestyle warnings
+  "I",    # isort
+  "UP",   # pyupgrade
+  "B",    # flake8-bugbear
+  "C4",   # flake8-comprehensions
+  "PIE",  # flake8-pie
+  "TID",  # flake8-tidy-imports (absolute imports)
+  "PGH",  # pygrep-hooks
+  "PERF", # Perflint
+  "RUF",
+]
