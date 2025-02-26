@@ -1,0 +1,41 @@
+sbe.io
+======
+
+.. py:module:: sbe.io
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   sbe.io.ERRORS
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   sbe.io.write_path
+   sbe.io.string_writer
+   sbe.io.hex_to_dataset
+   sbe.io.string_loader
+   sbe.io.read_hex
+
+
+Module Contents
+---------------
+
+.. py:data:: ERRORS
+
+.. py:function:: write_path(data: bytes, path: pathlib.Path, filename: str | None = None)
+
+.. py:function:: string_writer(da: xarray.DataArray, check=True) -> bytes
+
+.. py:function:: hex_to_dataset(path: pathlib.Path, errors: ERRORS = 'store', encoding='CP437', content_md5=True) -> xarray.Dataset
+
+.. py:function:: string_loader(path: pathlib.Path, varname=None, encoding='CP437', content_md5=True) -> xarray.Dataset
+
+.. py:function:: read_hex(path, errors: ERRORS = 'store', content_md5=True) -> xarray.Dataset
+

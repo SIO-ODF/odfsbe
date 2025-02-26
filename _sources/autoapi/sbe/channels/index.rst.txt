@@ -1,0 +1,25 @@
+sbe.channels
+============
+
+.. py:module:: sbe.channels
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   sbe.channels.get_volt_indicies
+   sbe.channels.get_voltage
+   sbe.channels.get_frequency
+
+
+Module Contents
+---------------
+
+.. py:function:: get_volt_indicies(n)
+
+.. py:function:: get_voltage(hex, channel, freq_supressed)
+
+.. py:function:: get_frequency(hex, channel)
+

@@ -1,0 +1,53 @@
+sbe.accessors
+=============
+
+.. py:module:: sbe.accessors
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   sbe.accessors.SBEAccessor
+
+
+Module Contents
+---------------
+
+.. py:class:: SBEAccessor(xarray_object: xarray.Dataset)
+
+   .. py:attribute:: _obj
+
+
+   .. py:method:: to_hex(path: str | os.PathLike | None = None, check=True)
+
+      return or write a .hex file identical to the input of read_hex
+
+      The output will not be identical if the errors of read_hex was not "store".
+
+
+
+   .. py:method:: _str_to_bytes_or_file(var, path: str | os.PathLike | None = None, check=True)
+
+
+   .. py:method:: to_hdr(path: str | os.PathLike | None = None, check=True)
+
+
+   .. py:method:: to_xmlcon(path: str | os.PathLike | None = None, check=True)
+
+
+   .. py:method:: to_bl(path: str | os.PathLike | None = None, check=True)
+
+
+   .. py:method:: all_to_dir(path: str | os.PathLike, check=True)
+
+      Write all possible output files to path
+
+      Given some path to a directory, will export all the files (hex, xmlcon, bl, hdr) using their input filenames.
+
+
+
+   .. py:method:: __getattr__(name)
+
+
