@@ -29,6 +29,7 @@ dev = [
     "myst-parser>=4.0.1",
     "ruff>=0.9.6",
     "sphinx>=8.2.1",
+    "sphinx-autoapi>=3.6.0",
 ]
 
 # taken from xarray
