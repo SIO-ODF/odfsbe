@@ -1,0 +1,19 @@
+sbe.tests.test_channels
+=======================
+
+.. py:module:: sbe.tests.test_channels
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   sbe.tests.test_channels.test_get_volt_indicies
+
+
+Module Contents
+---------------
+
+.. py:function:: test_get_volt_indicies(channel, expected)
+

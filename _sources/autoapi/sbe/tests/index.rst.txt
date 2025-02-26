@@ -4,3 +4,12 @@ sbe.tests
 .. py:module:: sbe.tests
 
 
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/sbe/tests/test_channels/index
+
+
