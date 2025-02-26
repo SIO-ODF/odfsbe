@@ -1,4 +1,7 @@
 # odf.sbe
+[![Tests CI Status](https://github.com/SIO-ODF/odfsbe/actions/workflows/run-tests.yml/badge.svg)](https://github.com/SIO-ODF/odfsbe/actions/workflows/run-tests.yml)
+[![Doc Build Status](https://github.com/SIO-ODF/odfsbe/actions/workflows/build-docs.yml/badge.svg)](https://sio-odf.github.io/odfsbe/)
+
 A raw seabird hex + xml + bl to xarray/netCDF 4 and back again library
 
 ## Goals
