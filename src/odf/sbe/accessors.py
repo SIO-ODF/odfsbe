@@ -57,12 +57,12 @@ class SBEAccessor:
         # Chain map will check the dicts in order for the presence of the key
         # data out is the "final" list of hex strings that will be joined by the line seperator
         data_dict = ChainMap(dict(data_rows), error_rows)
-        data_out = []
+        list_out = []
         for row in range(total_scans):
             scan = row + 1
-            data_out.append(data_dict[scan])
+            list_out.append(data_dict[scan])
         # The final "" here makes an empty line at the end of the file
-        data_out = "\r\n".join([header, *data_out, ""]).encode(
+        data_out = "\r\n".join([header, *list_out, ""]).encode(
             _hex.attrs.get("charset", "utf8")
         )
         # do the output check but only if there is a Content-MD5 attr

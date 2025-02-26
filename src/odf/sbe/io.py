@@ -9,7 +9,7 @@ ERRORS = Literal["store", "raise", "ignore"]
 
 
 def write_path(data: bytes, path: Path, filename: str | None = None):
-    if path.is_dir():
+    if path.is_dir() and filename is not None:
         with (path / filename).open("wb") as fo:
             fo.write(data)
     else:
@@ -18,10 +18,10 @@ def write_path(data: bytes, path: Path, filename: str | None = None):
 
 
 def string_writer(da: xr.DataArray, check=True) -> bytes:
-    _out = da.values.item()
+    _item = da.values.item()
     encoding = da.attrs.get("charset", "utf8")
 
-    _out = _out.encode(encoding)
+    _out = _item.encode(encoding)
 
     if check and (filehash := da.attrs.get("Content-MD5")) is not None:
         digest = md5(_out).hexdigest()
