@@ -28,6 +28,8 @@ jobs:
       
       - name: Sphinx Build HTML docs
         working-directory: docs
+        env:
+          SPHINXBUILD: "uv run sphinx-build"
         run: make html
       
       - name: Deploy
