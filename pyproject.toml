@@ -25,7 +25,10 @@ fallback_version = "9999"
 
 [dependency-groups]
 dev = [
+    "furo>=2024.8.6",
+    "myst-parser>=4.0.1",
     "ruff>=0.9.6",
+    "sphinx>=8.2.1",
 ]
 
 # taken from xarray
