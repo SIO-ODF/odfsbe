@@ -52,6 +52,9 @@ extend-select = [
   "PERF", # Perflint
   "RUF",
 ]
+ignore = [
+  "E501"  # line too long
+]
 
 [tool.pytest.ini_options]
 minversion = "6.0"

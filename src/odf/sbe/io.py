@@ -1,9 +1,9 @@
-from typing import Literal
-from pathlib import Path
 from hashlib import md5
+from pathlib import Path
+from typing import Literal
 
-import xarray as xr
 import numpy as np
+import xarray as xr
 
 ERRORS = Literal["store", "raise", "ignore"]
 

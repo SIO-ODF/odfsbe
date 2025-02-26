@@ -1,12 +1,13 @@
-from pathlib import Path
-from os import PathLike
-from hashlib import md5
 from collections import ChainMap
+from hashlib import md5
+from os import PathLike
+from pathlib import Path
 
 import xarray as xr
 
+from odf.sbe.io import string_writer, write_path
+
 from .channels import get_frequency, get_voltage
-from odf.sbe.io import write_path, string_writer
 
 
 @xr.register_dataset_accessor("sbe")
@@ -34,6 +35,7 @@ class SBEAccessor:
                 zip(
                     _hex_errors.scan_errors.values.tolist(),
                     _hex_errors.values.tolist(),
+                    strict=True,
                 )
             )
 
