@@ -7,6 +7,7 @@ import pandas as pd
 import xarray as xr
 import datetime
 
+
 def get_volt_indicies(n):
     """
     Calculate the HEX indices of a given voltage channel
@@ -42,6 +43,7 @@ def get_frequency(hex, channel):
     data = (data | hex[:, m + 1]) << 8
     data = data | hex[:, m + 2]
     return data / 256
+
 
 def _sbe_time(bytes_in, sbe_type="scan", reverse=False):
     """
