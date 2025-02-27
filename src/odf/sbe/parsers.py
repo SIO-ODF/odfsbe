@@ -5,6 +5,45 @@ Module for parsing dataset data variables (.bl, .xmlcon, .hdr) into dictionaries
 import xml.etree.cElementTree as ET
 import xarray as xr
 
+def parse_bl(bl):
+    """
+    Parse the .bl file's text into lists of bottle fired and reset times.
+    """
+    bl_lines = bl.splitlines()
+    resets = []
+    log = []
+    keys = ["sequence", "position", "time", "begining", "ending"]
+    for line in bl_lines[1:]:
+        if line.startswith("RESET"):
+            resets.append(line.removeprefix("RESET "))
+            continue
+        cells = [cell.strip() for cell in line.split(",")]
+        log.append(dict(zip(keys, cells, strict=True)))
+    return log, resets
+
+def parse_hdr(hdr):
+    """
+    Parse the .hdr file's text into a dictionary.
+    """
+    comments = []
+    hdr_dict = {}
+    for line in hdr.splitlines():
+        if line.startswith("**"):
+            comments.append(line.strip("* "))
+            continue
+        if line == "*END*":
+            continue
+        row = line.strip("* ")
+        if row.startswith("Sea-Bird SBE 9"):
+            continue
+        if row.startswith("Software Version"):
+            hdr_dict["Software Version"] = row.removeprefix("Software Version").strip()
+            continue
+        key, value = row.split("=")
+        hdr_dict[key.strip()] = value.strip()
+    hdr_dict["comments"] = "\n".join(comments)
+    return hdr_dict
+
 
 def parse_xmlcon(xml):
     """
