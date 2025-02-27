@@ -5,7 +5,7 @@ from pathlib import Path
 
 import xarray as xr
 
-from odf.sbe.io import string_writer, write_path
+from src.odf.sbe.io import string_writer, write_path
 
 from .channels import get_frequency, get_voltage
 
