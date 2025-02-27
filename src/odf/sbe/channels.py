@@ -1,10 +1,20 @@
+"""
+Module for handling "channel" data columns within the SeaBird hex.
+"""
+
 def get_volt_indicies(n):
+    """
+    Calculate the HEX indices of a given voltage channel
+    """
     start = n // 2 * 3
     high = n % 2
     return start + high, start + high + 1, 1 - high
 
 
 def get_voltage(hex, channel, freq_supressed):
+    """
+    Compute voltage for given voltage channel
+    """
     offset = (5 - freq_supressed) * 3
 
     first_byte_idx, second_byte_idx, shift = get_volt_indicies(channel)
@@ -19,8 +29,12 @@ def get_voltage(hex, channel, freq_supressed):
 
 
 def get_frequency(hex, channel):
+    """
+    Compute frequency for given frequency channel
+    """
     m = 3 * channel
     data = hex[:, m].astype("uint32") << 8
     data = (data | hex[:, m + 1]) << 8
     data = data | hex[:, m + 2]
     return data / 256
+
