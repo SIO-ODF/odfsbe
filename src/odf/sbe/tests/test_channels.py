@@ -1,6 +1,6 @@
 import pytest
 
-from odf.sbe import channels
+from src.odf.sbe import channels
 
 
 @pytest.mark.parametrize(
