@@ -7,7 +7,8 @@ import xarray as xr
 
 from src.odf.sbe.io import string_writer, write_path
 
-from .channels import get_frequency, get_voltage
+from .channels import get_frequency, get_voltage, metadata_wrapper
+from .parsers import parse_xmlcon
 
 
 @xr.register_dataset_accessor("sbe")
@@ -112,6 +113,15 @@ class SBEAccessor:
             self.to_hdr(_path, check=check)
         if "bl" in self._obj:
             self.to_bl(_path, check=check)
+
+    @property
+    def meta(self):
+        """
+        Write out metadata columns using the wrapper
+        """
+        hex_data = self._obj.hex
+        cfg, _ = parse_xmlcon(self._obj.xmlcon)
+        return metadata_wrapper(hex_data, cfg)
 
     def __getattr__(self, name):
         if name.startswith("f"):
