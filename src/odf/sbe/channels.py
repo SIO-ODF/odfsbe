@@ -153,29 +153,25 @@ def _sbe9core(bytes_in):
     temp = bytes_in[:, 0].astype("uint16") << 8
     temp |= bytes_in[:, 1]
     temp = temp >> 4
+    temp.name = "ptempC"
 
-    #   CTD status
-    pump = bytes_in[:, 1] & 1  #   Gets shifted
-    switch = bytes_in[:, 1] >> 1 & 1
-    sampler = bytes_in[:, 1] >> 2 & 1
-    modem = bytes_in[:, 1] >> 3 & 1
+    #   CTD status flag bits
+    pump = (bytes_in[:, 1] & 1).astype(bool)  #   Gets shifted
+    switch = (bytes_in[:, 1] >> 1 & 1).astype(bool)
+    sampler = (bytes_in[:, 1] >> 2 & 1).astype(bool)
+    modem = (bytes_in[:, 1] >> 3 & 1).astype(bool)
+
+    pump.name = "pump"
+    switch.name = "bct"
+    sampler.name = "HBBotCls"
+    modem.name = "modem"
 
     #   Modulo byte
     modulo = bytes_in[:, 2]
+    modulo.name = "mod"
 
-    return xr.DataArray(
-        np.column_stack((temp, pump, switch, sampler, modem, modulo)),
-        dims=["scan", "variable"],
-        coords={
-            "variable": [
-                "sbe9_temp",
-                "pump_status",
-                "contact_switch",
-                "bottle_fire",
-                "modem_sensed",
-                "modulo_error",
-            ]
-        },
+    return xr.Dataset(
+        {var.name: var for var in [temp, pump, switch, sampler, modem, modulo]}
     )
 
 
@@ -269,10 +265,7 @@ def metadata_wrapper(hex_data, cfg):
     col_extracts = hex_data[:, ix_tracker : ix_tracker + 3]
     data_to_write = _sbe9core(col_extracts)
     ix_tracker += 3
-    for var_name, values in zip(
-        data_to_write.coords["variable"].values, data_to_write.T.values, strict=True
-    ):
-        meta_out[var_name] = xr.DataArray(values, dims=["scan"])
+    meta_out = meta_out.merge(data_to_write)
 
     # scan_time
     if cfg["ScanTimeAdded"]:
