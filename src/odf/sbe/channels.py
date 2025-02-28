@@ -214,38 +214,32 @@ def metadata_wrapper(hex_data, cfg):
     Information about these steps (bytes, equations) is available in SBE's
     SBEDataProcessing and SeaSave manuals.
 
-    Future:
-    * Work on an accessors style to build a dictionary of callable functions
-    * Decide if f_s, v_s are really necessary as inputs
-
     Inputs:
     hex_data: xarray DataArray of the entire hex file
     cfg: the `data.xmlcon_box` from the XMLCON file, indicating which features
     are added to the HEX rows
     """
 
+    #   Start by figuring out the starting byte for the metadata
     f_s, v_s = (
         cfg[i] for i in ["FrequencyChannelsSuppressed", "VoltageWordsSuppressed"]
     )
-    # Figure out the starting byte
-    # cfg[SensorArraySize"] = total # of sensors appended (13 = 5 f + 8 v)
-    num_f = 5 - f_s
-    num_v = 8 - v_s
-    # For a full CTD (all freq., all volt.), this is 27 bytes from columns 0 - 26.
+    num_f = 5 - f_s  #   3 bytes per f
+    num_v = 8 - v_s  #   3 bytes per 2 v
     start_byte_ix = int(num_f * 3 + num_v * 1.5)
-    # hex_len = len(hex_data[0])
 
-    # Initialize an index tracker for specific byte allocations depending on settings
+    #   Track where we are in the metadata columns
     ix_tracker = start_byte_ix
 
-    meta_out = xr.DataArray(
-        np.arange(1, len(hex_data) + 1).reshape(-1, 1),  # Initialize with scan #
-        dims=["scan", "variable"],
-        coords={"variable": ["scan_number"]},
+    # Initialize an xarray Dataset
+    meta_out = xr.Dataset()
+    meta_out["scan_number"] = xr.DataArray(
+        np.arange(1, len(hex_data) + 1), dims=["scan"]
     )
 
     # Metadata is in a specific order. If it's there, extract specific sizes
-    # and increment the current column index.
+    # and increment the current column index. If it isn't, don't increment.
+
     # surface_par_voltage
     if cfg["SurfaceParVoltageAdded"]:
         #   handle the surface PAR - TODO: historically ODF hasn't done this?
@@ -261,8 +255,12 @@ def metadata_wrapper(hex_data, cfg):
     if cfg["NmeaPositionDataAdded"]:
         col_extracts = hex_data[:, ix_tracker : ix_tracker + 7].astype(int)
         data_to_write = _nmeaposition(col_extracts)
-        ix_tracker = ix_tracker + 7
-        meta_out = xr.concat([meta_out, data_to_write], dim="variable")
+        ix_tracker += 7
+        #   Unpack to variable in the dataset
+        for var_name, values in zip(
+            data_to_write.coords["variable"].values, data_to_write.T.values
+        ):
+            meta_out[var_name] = xr.DataArray(values, dims=["scan"])
 
     # nmea_depth_data
     if cfg["NmeaDepthDataAdded"]:
@@ -273,8 +271,10 @@ def metadata_wrapper(hex_data, cfg):
     if cfg["NmeaTimeAdded"]:
         col_extracts = hex_data[:, ix_tracker : ix_tracker + 4]
         data_to_write = _sbe_time(col_extracts, "nmea")
-        ix_tracker = ix_tracker + 4
-        meta_out = xr.concat([meta_out, data_to_write], dim="variable")
+        ix_tracker += 4
+        meta_out["nmea_timestamp"] = xr.DataArray(
+            data_to_write.values[:, 0], dims=["scan"]
+        )
 
     #   The following 3 are always true for SBE9:
     #   * pressure_temp - 1.5 bytes
@@ -282,21 +282,28 @@ def metadata_wrapper(hex_data, cfg):
     #   * modulo errors - 1 byte
     col_extracts = hex_data[:, ix_tracker : ix_tracker + 3]
     data_to_write = _sbe9core(col_extracts)
-    meta_out = xr.concat([meta_out, data_to_write], dim="variable")
-    ix_tracker = ix_tracker + 3
+    ix_tracker += 3
+    for var_name, values in zip(
+        data_to_write.coords["variable"].values, data_to_write.T.values
+    ):
+        meta_out[var_name] = xr.DataArray(values, dims=["scan"])
 
+    # scan_time
     if cfg["ScanTimeAdded"]:
         col_extracts = hex_data[:, ix_tracker : ix_tracker + 4]
         data_to_write = _sbe_time(col_extracts, "scan")
-        ix_tracker = ix_tracker + 4
-        meta_out = xr.concat([meta_out, data_to_write], dim="variable")
+        ix_tracker += 4
+        meta_out["scan_timestamp"] = xr.DataArray(
+            data_to_write.values[:, 0], dims=["scan"]
+        )
     else:
         print("No ScanTimeAdded in XMLCON - building manually from frequency.")
-        #   _sbe_time_seq
+        #   And then we do what sbeReader used to do
 
     if ix_tracker > len(hex_data[0]):
         print(
             f"Uh oh, might not have incremented metadata correctly."
             f" Got {ix_tracker} bytes out of a possible {len(hex_data[0])}."
         )
+
     return meta_out
