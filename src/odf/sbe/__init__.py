@@ -21,6 +21,6 @@ header - the part of the file that were not hex
 """
 
 # from odf.sbe.io import read_hex
-from src.odf.sbe.io import read_hex
+from odf.sbe.io import read_hex
 
 __all__ = ["read_hex"]
