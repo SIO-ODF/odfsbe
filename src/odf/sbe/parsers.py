@@ -5,6 +5,7 @@ Module for parsing dataset data variables (.bl, .xmlcon, .hdr) into dictionaries
 import xml.etree.cElementTree as ET
 import xarray as xr
 
+
 def parse_bl(bl):
     """
     Parse the .bl file's text into lists of bottle fired and reset times.
@@ -20,6 +21,7 @@ def parse_bl(bl):
         cells = [cell.strip() for cell in line.split(",")]
         log.append(dict(zip(keys, cells, strict=True)))
     return log, resets
+
 
 def parse_hdr(hdr):
     """
@@ -139,5 +141,3 @@ def parse_xmlcon(xml):
         )
 
     return config_dict, sensor_dict
-
-
