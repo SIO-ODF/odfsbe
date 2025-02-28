@@ -2,10 +2,9 @@
 Module for handling "channel" data columns within the SeaBird hex.
 """
 
-import datetime
+from typing import Literal
 
 import numpy as np
-import pandas as pd
 import xarray as xr
 
 
@@ -46,7 +45,9 @@ def get_frequency(hex, channel):
     return data / 256
 
 
-def _sbe_time(bytes_in, sbe_type="scan", reverse=False):
+def _sbe_time(
+    bytes_in: xr.DataArray, sbe_type: Literal["ScanTime", "NmeaTime"] = "ScanTime"
+):
     """
     Determine UTC datetime from SBE format of 4 bytes, using either scan or NMEA.
 
@@ -55,7 +56,7 @@ def _sbe_time(bytes_in, sbe_type="scan", reverse=False):
 
     Inputs:
     bytes_in: xarray DataArray of 4xn bytes.
-    sbe_type: string of type of time to pull from ("nmea" or "scan")
+    sbe_type: string of type of time to pull from ("NmeaTime" or "ScanTime")
     reverse: A historical argument for reversing byte order.
 
     Output:
@@ -66,39 +67,25 @@ def _sbe_time(bytes_in, sbe_type="scan", reverse=False):
     if bytes_in.sizes["bytes_per_scan"] != 4:
         raise ValueError("Each scan should contain exactly 4 bytes.")
 
-    if reverse:
-        # When working with hex strings, both "scan" and "nmea" required flipping the bytes
-        # TODO: Do we need this? Gave me bad conversions when reversed
-        bytes_out = bytes_in[:, ::-1]
-    else:
-        bytes_out = bytes_in
-
     # Define epoch start times based on the sbe conversion type
-    if sbe_type == "scan":
-        time_start = datetime.datetime(1970, 1, 1, tzinfo=datetime.UTC)
-    elif sbe_type == "nmea":
-        time_start = datetime.datetime(2000, 1, 1, tzinfo=datetime.UTC)
+    # default is for sbe_type == "scan"
+    epoch = np.datetime64("1970-01-01")
+    if sbe_type == "NmeaTime":
+        epoch = np.datetime64("2000-01-01")
 
-    # Convert bytes to integer timestamps with weights modifier
-    weights = np.array([1, 256, 65536, 16777216], dtype=np.uint32)
-    all_seconds = (bytes_out.astype(np.uint32) * weights).sum(dim="bytes_per_scan")
-
-    # Something human-readable
-    timestamps = pd.to_datetime(
-        all_seconds.values + time_start.timestamp(), unit="s", utc=True
-    ).values.reshape(-1, 1)
-    timestamps = timestamps.astype(np.float64)
-
-    return xr.DataArray(
-        timestamps,  # 2D array
-        dims=["scan", "variable"],
-        coords={
-            "scan": bytes_in.coords[
-                "scan"
-            ],  # Keep the scan dimension from the input data
-            "variable": ["Timestamp"],  # Only one variable: "Timestamp"
-        },
+    # Convert bytes to integer timestamps
+    # bytes come in in litte-endian order, instead of doing a bunch of bit shifting
+    # we just elementwise multiply and sum.
+    byte_positions = np.array([1 << 0, 1 << 8, 1 << 16, 1 << 24], dtype=np.uint32)
+    all_seconds = (
+        (bytes_in.astype(np.uint32) * byte_positions)
+        .sum(dim="bytes_per_scan")
+        .astype("timedelta64[s]")
     )
+
+    timestamps = all_seconds + epoch
+    timestamps.name = sbe_type
+    return timestamps
 
 
 def _nmeaposition(bytes_in):
@@ -271,11 +258,9 @@ def metadata_wrapper(hex_data, cfg):
     # nmea_time
     if cfg["NmeaTimeAdded"]:
         col_extracts = hex_data[:, ix_tracker : ix_tracker + 4]
-        data_to_write = _sbe_time(col_extracts, "nmea")
+        data_to_write = _sbe_time(col_extracts, "NmeaTime")
         ix_tracker += 4
-        meta_out["nmea_timestamp"] = xr.DataArray(
-            data_to_write.values[:, 0], dims=["scan"]
-        )
+        meta_out[data_to_write.name] = data_to_write
 
     #   The following 3 are always true for SBE9:
     #   * pressure_temp - 1.5 bytes
@@ -292,11 +277,9 @@ def metadata_wrapper(hex_data, cfg):
     # scan_time
     if cfg["ScanTimeAdded"]:
         col_extracts = hex_data[:, ix_tracker : ix_tracker + 4]
-        data_to_write = _sbe_time(col_extracts, "scan")
+        data_to_write = _sbe_time(col_extracts, "ScanTime")
         ix_tracker += 4
-        meta_out["scan_timestamp"] = xr.DataArray(
-            data_to_write.values[:, 0], dims=["scan"]
-        )
+        meta_out[data_to_write.name] = data_to_write
     else:
         print("No ScanTimeAdded in XMLCON - building manually from frequency.")
         #   And then we do what sbeReader used to do
