@@ -7,7 +7,7 @@ import xarray as xr
 
 from odf.sbe.io import string_writer, write_path
 
-from .channels import get_frequency, get_voltage, metadata_wrapper
+from .channels import get_frequency, get_voltage, get_metadata
 from .parsers import parse_xmlcon
 
 
@@ -121,7 +121,7 @@ class SBEAccessor:
         """
         hex_data = self._obj.hex
         cfg, _ = parse_xmlcon(self._obj.xmlcon)
-        return metadata_wrapper(hex_data, cfg)
+        return get_metadata(hex_data, cfg)
 
     def __getattr__(self, name):
         if name.startswith("f"):

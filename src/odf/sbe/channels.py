@@ -147,7 +147,14 @@ def _nmeaposition(bytes_in):
 def _sbe9core(bytes_in):
     """
     Handle the bundle of SBE9 core metadata columns: SBE9 temperature, pump status, contact switch, bottle fire, modem, modulo.
+
+    The SBE9's pressure temperature port gets 1.5 bytes (12 bits)
+    The CTD status flag booleans get 0.5 bytes (4 bits)
+    The modulo word gets 1 byte (8 bits)
     """
+
+    if bytes_in.sizes["bytes_per_scan"] != 3:
+        raise ValueError("Each scan should contain exactly 3 bytes.")
 
     #   SBE9 temp: 12-bit number if binary notation of temperature from 0-4095
     temp = bytes_in[:, 0].astype("uint16") << 8
@@ -156,7 +163,7 @@ def _sbe9core(bytes_in):
     temp.name = "ptempC"
 
     #   CTD status flag bits
-    pump = (bytes_in[:, 1] & 1).astype(bool)  #   Gets shifted
+    pump = (bytes_in[:, 1] & 1).astype(bool)  #   Gets shifted by 1 bit
     switch = (bytes_in[:, 1] >> 1 & 1).astype(bool)
     sampler = (bytes_in[:, 1] >> 2 & 1).astype(bool)
     modem = (bytes_in[:, 1] >> 3 & 1).astype(bool)
@@ -175,7 +182,7 @@ def _sbe9core(bytes_in):
     )
 
 
-def metadata_wrapper(hex_data, cfg):
+def get_metadata(hex_data, cfg):
     """
     A wrapper of sorts to handle columnar metadata in the source HEX file.
 
