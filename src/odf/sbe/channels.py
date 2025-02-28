@@ -2,10 +2,11 @@
 Module for handling "channel" data columns within the SeaBird hex.
 """
 
+import datetime
+
 import numpy as np
 import pandas as pd
 import xarray as xr
-import datetime
 
 
 def get_volt_indicies(n):
@@ -74,9 +75,9 @@ def _sbe_time(bytes_in, sbe_type="scan", reverse=False):
 
     # Define epoch start times based on the sbe conversion type
     if sbe_type == "scan":
-        time_start = datetime.datetime(1970, 1, 1, tzinfo=datetime.timezone.utc)
+        time_start = datetime.datetime(1970, 1, 1, tzinfo=datetime.UTC)
     elif sbe_type == "nmea":
-        time_start = datetime.datetime(2000, 1, 1, tzinfo=datetime.timezone.utc)
+        time_start = datetime.datetime(2000, 1, 1, tzinfo=datetime.UTC)
 
     # Convert bytes to integer timestamps with weights modifier
     weights = np.array([1, 256, 65536, 16777216], dtype=np.uint32)
@@ -258,7 +259,7 @@ def metadata_wrapper(hex_data, cfg):
         ix_tracker += 7
         #   Unpack to variable in the dataset
         for var_name, values in zip(
-            data_to_write.coords["variable"].values, data_to_write.T.values
+            data_to_write.coords["variable"].values, data_to_write.T.values, strict=True
         ):
             meta_out[var_name] = xr.DataArray(values, dims=["scan"])
 
@@ -284,7 +285,7 @@ def metadata_wrapper(hex_data, cfg):
     data_to_write = _sbe9core(col_extracts)
     ix_tracker += 3
     for var_name, values in zip(
-        data_to_write.coords["variable"].values, data_to_write.T.values
+        data_to_write.coords["variable"].values, data_to_write.T.values, strict=True
     ):
         meta_out[var_name] = xr.DataArray(values, dims=["scan"])
 

@@ -2,7 +2,8 @@
 Module for parsing dataset data variables (.bl, .xmlcon, .hdr) into dictionaries
 """
 
-import xml.etree.cElementTree as ET
+import xml.etree.ElementTree as ET
+
 import xarray as xr
 
 
