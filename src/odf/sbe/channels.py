@@ -88,7 +88,7 @@ def _sbe_time(
     return timestamps
 
 
-def _nmeaposition(bytes_in):
+def _nmeaposition(bytes_in: xr.DataArray):
     """
     Determine location from SBE format of 8-bit integers.
 
@@ -136,7 +136,7 @@ def _nmeaposition(bytes_in):
     return xr.Dataset({var.name: var for var in [lat, lon, flag_new_fix]})
 
 
-def _sbe9core(bytes_in):
+def _sbe9core(bytes_in: xr.DataArray):
     """
     Handle the bundle of SBE9 core metadata columns: SBE9 temperature, pump status, contact switch, bottle fire, modem, modulo.
 
@@ -174,7 +174,7 @@ def _sbe9core(bytes_in):
     )
 
 
-def get_metadata(hex_data, cfg):
+def get_metadata(hex_data: xr.DataArray, cfg):
     """
     A wrapper of sorts to handle columnar metadata in the source HEX file.
 
