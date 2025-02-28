@@ -97,9 +97,9 @@ def _nmeaposition(bytes_in):
     See legacy code sbe_reader.SBEReader._location_fix context.
 
     Input:
-    b1, b2, b3: three components of Latitude
-    b4, b5, b6: three components of Longitude
-    b7: sign for lat/lon, is used for sign corrections
+    bytes 1 to 3: three components of Latitude
+    bytes 4 to 6: three components of Longitude
+    byte 7: signs (hemispheres) for lat/lon and if this location is a "new" fix
 
     Output:
     DataArray of:
@@ -113,35 +113,27 @@ def _nmeaposition(bytes_in):
     If bit 8 in byte_pos is 1, lat is negative
     If bit 7 in byte_pos is 1, lon is negative
     """
-    b1 = bytes_in[:, 0]
-    b2 = bytes_in[:, 1]
-    b3 = bytes_in[:, 2]
-    b4 = bytes_in[:, 3]
-    b5 = bytes_in[:, 4]
-    b6 = bytes_in[:, 5]
-    b7 = bytes_in[:, 6]
+    bytes_in = bytes_in.astype("uint32")
+    signs_pos_fix = bytes_in[:, 6]
 
     #   Compute latitude and longitude
-    lat = (b1 * 65536 + b2 * 256 + b3) / 50000
-    lon = (b4 * 65536 + b5 * 256 + b6) / 50000
+    lat = (bytes_in[:, 0] << 16 | bytes_in[:, 1] << 8 | bytes_in[:, 2]) / 50000
+    lon = (bytes_in[:, 3] << 16 | bytes_in[:, 4] << 8 | bytes_in[:, 5]) / 50000
 
-    #   Hex masks to extract specific bits of byte 7
-    mask_lat_pos = 0x80  #   Bit 8 10000000, if lat negative
-    mask_lon_pos = 0x40  #   Bit 7 01000000, if lon negative
-    mask_new_fix = 0x01  #   Bit 1 00000001, if "new position"
+    # sets the sign to -1 if the respective sign bits are set, 1 if not set.
+    lat_sign = 1 - 2 * ((signs_pos_fix >> 8) & 1)  #   Bit 8 is set if lat negative
+    lon_sign = 1 - 2 * ((signs_pos_fix >> 7) & 1)  #   Bit 7 is set if lon negative
 
-    #   Apply byte 7 modifications
-    lat = np.where(b7 & mask_lat_pos, -lat, lat)
-    lon = np.where(b7 & mask_lon_pos, -lon, lon)
-    flag_new_fix = (b7 & mask_new_fix).astype(bool)
+    #   Apply sign multiplications
+    lat = lat * lat_sign
+    lon = lon * lon_sign
+    flag_new_fix = (signs_pos_fix & 1).astype(bool)  # bit 1 is set if this is a new fix
 
-    output = xr.DataArray(
-        np.column_stack((lat, lon, flag_new_fix)),
-        dims=["scan", "variable"],
-        coords={"variable": ["lat", "lon", "sign_fix"]},
-    )
+    lat.name = "latitude"
+    lon.name = "longitude"
+    flag_new_fix.name = "newpos"
 
-    return output
+    return xr.Dataset({var.name: var for var in [lat, lon, flag_new_fix]})
 
 
 def _sbe9core(bytes_in):
@@ -224,9 +216,6 @@ def get_metadata(hex_data, cfg):
 
     # Initialize an xarray Dataset
     meta_out = xr.Dataset()
-    meta_out["scan_number"] = xr.DataArray(
-        np.arange(1, len(hex_data) + 1), dims=["scan"]
-    )
 
     # Metadata is in a specific order. If it's there, extract specific sizes
     # and increment the current column index. If it isn't, don't increment.
@@ -248,10 +237,7 @@ def get_metadata(hex_data, cfg):
         data_to_write = _nmeaposition(col_extracts)
         ix_tracker += 7
         #   Unpack to variable in the dataset
-        for var_name, values in zip(
-            data_to_write.coords["variable"].values, data_to_write.T.values, strict=True
-        ):
-            meta_out[var_name] = xr.DataArray(values, dims=["scan"])
+        meta_out = meta_out.merge(data_to_write)
 
     # nmea_depth_data
     if cfg["NmeaDepthDataAdded"]:
