@@ -1,0 +1,73 @@
+sbe.parsers
+===========
+
+.. py:module:: sbe.parsers
+
+.. autoapi-nested-parse::
+
+   Module for parsing dataset data variables (.bl, .xmlcon, .hdr) into dictionaries
+
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   sbe.parsers.parse_bl
+   sbe.parsers.parse_hdr
+   sbe.parsers.parse_xmlcon
+
+
+Module Contents
+---------------
+
+.. py:function:: parse_bl(bl)
+
+   Parse the .bl file's text into lists of bottle fired and reset times.
+
+
+.. py:function:: parse_hdr(hdr)
+
+   Parse the .hdr file's text into a dictionary.
+
+
+.. py:function:: parse_xmlcon(xml)
+
+   Parses an XMLCON configuration file into configuration and sensor metadata
+   dictionaries.
+
+   This function reads an XMLCON file, extracts deck unit configuration
+   settings, and retrieves metadata and calibration coefficients for connected
+   sensors.
+
+   Code initially written 2024 Aaron Mau.
+
+   Parameters
+   ----------
+   xml_config_path : str or pathlib.Path
+       Path to the XMLCON file to be parsed.
+   encoding : str, optional
+       Encoding used to read the XMLCON file. Default is `"cp437"`.
+
+   Returns
+   -------
+   tuple
+       A tuple containing two dictionaries:
+       - `config_dict` (dict): A dictionary of deck unit configuration
+         settings, where keys are the configuration tags and values are their
+         respective values.
+       - `sensor_dict` (dict): A dictionary of sensor metadata, where keys are
+         sensor indices (as integers) and values are nested dictionaries
+         containing metadata and calibration coefficients for each sensor.
+
+   Notes
+   -----
+   - The XMLCON file is parsed using an `ElementTree` object to extract both
+     configuration settings and sensor information.
+   - Calibration coefficients for sensors (e.g., `SBE4` or `SBE43`) are nested
+     within the sensor metadata and are structured as dictionaries.
+   - If a tag with calibration coefficients is repeated, it is appended with
+     `2` to avoid overwriting.
+
+

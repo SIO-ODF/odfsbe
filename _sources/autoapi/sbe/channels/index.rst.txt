@@ -3,6 +3,11 @@ sbe.channels
 
 .. py:module:: sbe.channels
 
+.. autoapi-nested-parse::
+
+   Module for handling "channel" data columns within the SeaBird hex.
+
+
 
 Functions
 ---------
@@ -12,6 +17,10 @@ Functions
    sbe.channels.get_volt_indicies
    sbe.channels.get_voltage
    sbe.channels.get_frequency
+   sbe.channels._sbe_time
+   sbe.channels._nmeaposition
+   sbe.channels._sbe9core
+   sbe.channels.get_metadata
 
 
 Module Contents
@@ -19,7 +28,98 @@ Module Contents
 
 .. py:function:: get_volt_indicies(n)
 
+   Calculate the HEX indices of a given voltage channel
+
+
 .. py:function:: get_voltage(hex, channel, freq_supressed)
 
+   Compute voltage for given voltage channel
+
+
 .. py:function:: get_frequency(hex, channel)
+
+   Compute frequency for given frequency channel
+
+
+.. py:function:: _sbe_time(bytes_in: xarray.DataArray, sbe_type: Literal['ScanTime', 'NmeaTime'] = 'ScanTime')
+
+   Determine UTC datetime from SBE format of 4 bytes, using either scan or NMEA.
+
+   See legacy code sbe_reader.SBEReader._sbe_time and _reverse_bytes for
+   historical examples when ODF worked on metadata as strings.
+
+   Inputs:
+   bytes_in: xarray DataArray of 4xn bytes.
+   sbe_type: string of type of time to pull from ("NmeaTime" or "ScanTime")
+   reverse: A historical argument for reversing byte order.
+
+   Output:
+   xarray 1xn DataArray of float64 of variable "Timestamp" in UTC.
+   Check these values using
+   `pd.to_datetime(data_to_write.values.flatten(), utc=True)`
+
+
+.. py:function:: _nmeaposition(bytes_in: xarray.DataArray)
+
+   Determine location from SBE format of 8-bit integers.
+
+   Requires bytes_in of 7 bytes in a DataArray or array-like format.
+
+   See legacy code sbe_reader.SBEReader._location_fix context.
+
+   Input:
+   bytes 1 to 3: three components of Latitude
+   bytes 4 to 6: three components of Longitude
+   byte 7: signs (hemispheres) for lat/lon and if this location is a "new" fix
+
+   Output:
+   DataArray of:
+   latitude, longitude, new fix
+   Latitude is a float
+   Longitude is a float
+   If it is a "new fix" it will be true, otherwise false
+
+   For byte 7:
+   If bit 1 in byte_pos is 1, this is a new position
+   If bit 8 in byte_pos is 1, lat is negative
+   If bit 7 in byte_pos is 1, lon is negative
+
+
+.. py:function:: _sbe9core(bytes_in: xarray.DataArray)
+
+   Handle the bundle of SBE9 core metadata columns: SBE9 temperature, pump status, contact switch, bottle fire, modem, modulo.
+
+   The SBE9's pressure temperature port gets 1.5 bytes (12 bits)
+   The CTD status flag booleans get 0.5 bytes (4 bits)
+   The modulo word gets 1 byte (8 bits)
+
+
+.. py:function:: get_metadata(hex_data: xarray.DataArray, cfg)
+
+   A wrapper of sorts to handle columnar metadata in the source HEX file.
+
+   Columns of the HEX are output in a specific order, based on configuration:
+   ---done with `hex_to_f`, `hex_to_v`---
+   1) Data from the instrument (written to netCDF as `engineering`)
+       a) Frequency (3 bytes each)
+       b) Voltage (12 bits each)
+   ---this wrapper---
+   2) Surface Par (3 bytes) (ODF historically has limited support for this)
+   3) NMEA lat/lon (7 bytes)
+   4) NMEA depth (3 bytes)
+   5) NMEA time (4 bytes) (low byte first)
+   6) Additional Data from the instrument
+       a) Pressure temp (12 bits)
+       b) pump status (4 bits)
+       c) modulo byte (1 byte)
+   7) System time (4 bytes) (low byte first)
+
+   Information about these steps (bytes, equations) is available in SBE's
+   SBEDataProcessing and SeaSave manuals.
+
+   Inputs:
+   hex_data: xarray DataArray of the entire hex file
+   cfg: the `data.xmlcon_box` from the XMLCON file, indicating which features
+   are added to the HEX rows
+
 

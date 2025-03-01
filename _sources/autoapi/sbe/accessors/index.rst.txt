@@ -17,6 +17,16 @@ Module Contents
 
 .. py:class:: SBEAccessor(xarray_object: xarray.Dataset)
 
+   Bases: :py:obj:`collections.abc.Mapping`
+
+
+   A Mapping is a generic container for associating key/value
+   pairs.
+
+   This class provides concrete generic implementations of all
+   methods except for __getitem__, __iter__, and __len__.
+
+
    .. py:attribute:: _obj
 
 
@@ -48,6 +58,49 @@ Module Contents
 
 
 
-   .. py:method:: __getattr__(name)
+   .. py:method:: _xmlcon()
+
+
+   .. py:method:: get_frequency(freq: int)
+
+
+   .. py:method:: get_voltage(voltage: int)
+
+
+   .. py:property:: num_frequencies
+      :type: int
+
+
+
+   .. py:property:: num_voltages
+      :type: int
+
+
+
+   .. py:property:: config
+
+
+   .. py:property:: sensors
+
+
+   .. py:method:: serialize()
+
+
+   .. py:property:: _meta
+
+      Write out metadata columns using the wrapper
+
+
+
+   .. py:property:: _names
+
+
+   .. py:method:: __getitem__(name)
+
+
+   .. py:method:: __len__()
+
+
+   .. py:method:: __iter__()
 
 

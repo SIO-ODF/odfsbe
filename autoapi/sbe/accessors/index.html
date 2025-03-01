@@ -206,6 +206,7 @@
 <li class="toctree-l3 current current-page"><a class="current reference internal" href="#">sbe.accessors</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../channels/index.html">sbe.channels</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../io/index.html">sbe.io</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../parsers/index.html">sbe.parsers</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../tests/index.html">sbe.tests</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of sbe.tests</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../tests/test_channels/index.html">sbe.tests.test_channels</a></li>
 </ul>
@@ -262,7 +263,7 @@
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sbe.accessors.SBEAccessor" title="sbe.accessors.SBEAccessor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SBEAccessor</span></code></a></p></td>
-<td><p></p></td>
+<td><p>A Mapping is a generic container for associating key/value</p></td>
 </tr>
 </tbody>
 </table>
@@ -273,7 +274,12 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="sbe.accessors.SBEAccessor">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sbe.accessors.</span></span><span class="sig-name descname"><span class="pre">SBEAccessor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xarray_object</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">xarray.Dataset</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sbe.accessors.SBEAccessor" title="Link to this definition">¶</a></dt>
-<dd><dl class="py attribute">
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">collections.abc.Mapping</span></code></p>
+<p>A Mapping is a generic container for associating key/value
+pairs.</p>
+<p>This class provides concrete generic implementations of all
+methods except for __getitem__, __iter__, and __len__.</p>
+<dl class="py attribute">
 <dt class="sig sig-object py" id="sbe.accessors.SBEAccessor._obj">
 <span class="sig-name descname"><span class="pre">_obj</span></span><a class="headerlink" href="#sbe.accessors.SBEAccessor._obj" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -313,8 +319,69 @@
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="sbe.accessors.SBEAccessor.__getattr__">
-<span class="sig-name descname"><span class="pre">__getattr__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sbe.accessors.SBEAccessor.__getattr__" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="sbe.accessors.SBEAccessor._xmlcon">
+<span class="sig-name descname"><span class="pre">_xmlcon</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sbe.accessors.SBEAccessor._xmlcon" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sbe.accessors.SBEAccessor.get_frequency">
+<span class="sig-name descname"><span class="pre">get_frequency</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">freq</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sbe.accessors.SBEAccessor.get_frequency" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sbe.accessors.SBEAccessor.get_voltage">
+<span class="sig-name descname"><span class="pre">get_voltage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">voltage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sbe.accessors.SBEAccessor.get_voltage" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sbe.accessors.SBEAccessor.num_frequencies">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_frequencies</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#sbe.accessors.SBEAccessor.num_frequencies" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sbe.accessors.SBEAccessor.num_voltages">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_voltages</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#sbe.accessors.SBEAccessor.num_voltages" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sbe.accessors.SBEAccessor.config">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">config</span></span><a class="headerlink" href="#sbe.accessors.SBEAccessor.config" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sbe.accessors.SBEAccessor.sensors">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sensors</span></span><a class="headerlink" href="#sbe.accessors.SBEAccessor.sensors" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sbe.accessors.SBEAccessor.serialize">
+<span class="sig-name descname"><span class="pre">serialize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sbe.accessors.SBEAccessor.serialize" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sbe.accessors.SBEAccessor._meta">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_meta</span></span><a class="headerlink" href="#sbe.accessors.SBEAccessor._meta" title="Link to this definition">¶</a></dt>
+<dd><p>Write out metadata columns using the wrapper</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sbe.accessors.SBEAccessor._names">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">_names</span></span><a class="headerlink" href="#sbe.accessors.SBEAccessor._names" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sbe.accessors.SBEAccessor.__getitem__">
+<span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sbe.accessors.SBEAccessor.__getitem__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sbe.accessors.SBEAccessor.__len__">
+<span class="sig-name descname"><span class="pre">__len__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sbe.accessors.SBEAccessor.__len__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sbe.accessors.SBEAccessor.__iter__">
+<span class="sig-name descname"><span class="pre">__iter__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sbe.accessors.SBEAccessor.__iter__" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -388,7 +455,19 @@
 <li><a class="reference internal" href="#sbe.accessors.SBEAccessor.to_xmlcon"><code class="docutils literal notranslate"><span class="pre">SBEAccessor.to_xmlcon()</span></code></a></li>
 <li><a class="reference internal" href="#sbe.accessors.SBEAccessor.to_bl"><code class="docutils literal notranslate"><span class="pre">SBEAccessor.to_bl()</span></code></a></li>
 <li><a class="reference internal" href="#sbe.accessors.SBEAccessor.all_to_dir"><code class="docutils literal notranslate"><span class="pre">SBEAccessor.all_to_dir()</span></code></a></li>
-<li><a class="reference internal" href="#sbe.accessors.SBEAccessor.__getattr__"><code class="docutils literal notranslate"><span class="pre">SBEAccessor.__getattr__()</span></code></a></li>
+<li><a class="reference internal" href="#sbe.accessors.SBEAccessor._xmlcon"><code class="docutils literal notranslate"><span class="pre">SBEAccessor._xmlcon()</span></code></a></li>
+<li><a class="reference internal" href="#sbe.accessors.SBEAccessor.get_frequency"><code class="docutils literal notranslate"><span class="pre">SBEAccessor.get_frequency()</span></code></a></li>
+<li><a class="reference internal" href="#sbe.accessors.SBEAccessor.get_voltage"><code class="docutils literal notranslate"><span class="pre">SBEAccessor.get_voltage()</span></code></a></li>
+<li><a class="reference internal" href="#sbe.accessors.SBEAccessor.num_frequencies"><code class="docutils literal notranslate"><span class="pre">SBEAccessor.num_frequencies</span></code></a></li>
+<li><a class="reference internal" href="#sbe.accessors.SBEAccessor.num_voltages"><code class="docutils literal notranslate"><span class="pre">SBEAccessor.num_voltages</span></code></a></li>
+<li><a class="reference internal" href="#sbe.accessors.SBEAccessor.config"><code class="docutils literal notranslate"><span class="pre">SBEAccessor.config</span></code></a></li>
+<li><a class="reference internal" href="#sbe.accessors.SBEAccessor.sensors"><code class="docutils literal notranslate"><span class="pre">SBEAccessor.sensors</span></code></a></li>
+<li><a class="reference internal" href="#sbe.accessors.SBEAccessor.serialize"><code class="docutils literal notranslate"><span class="pre">SBEAccessor.serialize()</span></code></a></li>
+<li><a class="reference internal" href="#sbe.accessors.SBEAccessor._meta"><code class="docutils literal notranslate"><span class="pre">SBEAccessor._meta</span></code></a></li>
+<li><a class="reference internal" href="#sbe.accessors.SBEAccessor._names"><code class="docutils literal notranslate"><span class="pre">SBEAccessor._names</span></code></a></li>
+<li><a class="reference internal" href="#sbe.accessors.SBEAccessor.__getitem__"><code class="docutils literal notranslate"><span class="pre">SBEAccessor.__getitem__()</span></code></a></li>
+<li><a class="reference internal" href="#sbe.accessors.SBEAccessor.__len__"><code class="docutils literal notranslate"><span class="pre">SBEAccessor.__len__()</span></code></a></li>
+<li><a class="reference internal" href="#sbe.accessors.SBEAccessor.__iter__"><code class="docutils literal notranslate"><span class="pre">SBEAccessor.__iter__()</span></code></a></li>
 </ul>
 </li>
 </ul>

@@ -206,6 +206,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../accessors/index.html">sbe.accessors</a></li>
 <li class="toctree-l3 current current-page"><a class="current reference internal" href="#">sbe.channels</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../io/index.html">sbe.io</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../parsers/index.html">sbe.parsers</a></li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="../tests/index.html">sbe.tests</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of sbe.tests</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="../tests/test_channels/index.html">sbe.tests.test_channels</a></li>
 </ul>
@@ -256,19 +257,32 @@
         <article role="main" id="furo-main-content">
           <section id="module-sbe.channels">
 <span id="sbe-channels"></span><h1>sbe.channels<a class="headerlink" href="#module-sbe.channels" title="Link to this heading">¶</a></h1>
+<p>Module for handling “channel” data columns within the SeaBird hex.</p>
 <section id="functions">
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">¶</a></h2>
 <div class="table-wrapper autosummary longtable docutils container">
 <table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sbe.channels.get_volt_indicies" title="sbe.channels.get_volt_indicies"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_volt_indicies</span></code></a>(n)</p></td>
-<td><p></p></td>
+<td><p>Calculate the HEX indices of a given voltage channel</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#sbe.channels.get_voltage" title="sbe.channels.get_voltage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_voltage</span></code></a>(hex, channel, freq_supressed)</p></td>
-<td><p></p></td>
+<td><p>Compute voltage for given voltage channel</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#sbe.channels.get_frequency" title="sbe.channels.get_frequency"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_frequency</span></code></a>(hex, channel)</p></td>
-<td><p></p></td>
+<td><p>Compute frequency for given frequency channel</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sbe.channels._sbe_time" title="sbe.channels._sbe_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_sbe_time</span></code></a>(bytes_in[, sbe_type])</p></td>
+<td><p>Determine UTC datetime from SBE format of 4 bytes, using either scan or NMEA.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sbe.channels._nmeaposition" title="sbe.channels._nmeaposition"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_nmeaposition</span></code></a>(bytes_in)</p></td>
+<td><p>Determine location from SBE format of 8-bit integers.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sbe.channels._sbe9core" title="sbe.channels._sbe9core"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_sbe9core</span></code></a>(bytes_in)</p></td>
+<td><p>Handle the bundle of SBE9 core metadata columns: SBE9 temperature, pump status, contact switch, bottle fire, modem, modulo.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sbe.channels.get_metadata" title="sbe.channels.get_metadata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_metadata</span></code></a>(hex_data, cfg)</p></td>
+<td><p>A wrapper of sorts to handle columnar metadata in the source HEX file.</p></td>
 </tr>
 </tbody>
 </table>
@@ -279,17 +293,104 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="sbe.channels.get_volt_indicies">
 <span class="sig-prename descclassname"><span class="pre">sbe.channels.</span></span><span class="sig-name descname"><span class="pre">get_volt_indicies</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sbe.channels.get_volt_indicies" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Calculate the HEX indices of a given voltage channel</p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sbe.channels.get_voltage">
 <span class="sig-prename descclassname"><span class="pre">sbe.channels.</span></span><span class="sig-name descname"><span class="pre">get_voltage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq_supressed</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sbe.channels.get_voltage" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Compute voltage for given voltage channel</p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sbe.channels.get_frequency">
 <span class="sig-prename descclassname"><span class="pre">sbe.channels.</span></span><span class="sig-name descname"><span class="pre">get_frequency</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sbe.channels.get_frequency" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Compute frequency for given frequency channel</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sbe.channels._sbe_time">
+<span class="sig-prename descclassname"><span class="pre">sbe.channels.</span></span><span class="sig-name descname"><span class="pre">_sbe_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bytes_in</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">xarray.DataArray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sbe_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'ScanTime'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'NmeaTime'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'ScanTime'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sbe.channels._sbe_time" title="Link to this definition">¶</a></dt>
+<dd><p>Determine UTC datetime from SBE format of 4 bytes, using either scan or NMEA.</p>
+<p>See legacy code sbe_reader.SBEReader._sbe_time and _reverse_bytes for
+historical examples when ODF worked on metadata as strings.</p>
+<p>Inputs:
+bytes_in: xarray DataArray of 4xn bytes.
+sbe_type: string of type of time to pull from (“NmeaTime” or “ScanTime”)
+reverse: A historical argument for reversing byte order.</p>
+<p>Output:
+xarray 1xn DataArray of float64 of variable “Timestamp” in UTC.
+Check these values using
+<cite>pd.to_datetime(data_to_write.values.flatten(), utc=True)</cite></p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sbe.channels._nmeaposition">
+<span class="sig-prename descclassname"><span class="pre">sbe.channels.</span></span><span class="sig-name descname"><span class="pre">_nmeaposition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bytes_in</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">xarray.DataArray</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sbe.channels._nmeaposition" title="Link to this definition">¶</a></dt>
+<dd><p>Determine location from SBE format of 8-bit integers.</p>
+<p>Requires bytes_in of 7 bytes in a DataArray or array-like format.</p>
+<p>See legacy code sbe_reader.SBEReader._location_fix context.</p>
+<p>Input:
+bytes 1 to 3: three components of Latitude
+bytes 4 to 6: three components of Longitude
+byte 7: signs (hemispheres) for lat/lon and if this location is a “new” fix</p>
+<p>Output:
+DataArray of:
+latitude, longitude, new fix
+Latitude is a float
+Longitude is a float
+If it is a “new fix” it will be true, otherwise false</p>
+<p>For byte 7:
+If bit 1 in byte_pos is 1, this is a new position
+If bit 8 in byte_pos is 1, lat is negative
+If bit 7 in byte_pos is 1, lon is negative</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sbe.channels._sbe9core">
+<span class="sig-prename descclassname"><span class="pre">sbe.channels.</span></span><span class="sig-name descname"><span class="pre">_sbe9core</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bytes_in</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">xarray.DataArray</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sbe.channels._sbe9core" title="Link to this definition">¶</a></dt>
+<dd><p>Handle the bundle of SBE9 core metadata columns: SBE9 temperature, pump status, contact switch, bottle fire, modem, modulo.</p>
+<p>The SBE9’s pressure temperature port gets 1.5 bytes (12 bits)
+The CTD status flag booleans get 0.5 bytes (4 bits)
+The modulo word gets 1 byte (8 bits)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sbe.channels.get_metadata">
+<span class="sig-prename descclassname"><span class="pre">sbe.channels.</span></span><span class="sig-name descname"><span class="pre">get_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hex_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">xarray.DataArray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cfg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sbe.channels.get_metadata" title="Link to this definition">¶</a></dt>
+<dd><p>A wrapper of sorts to handle columnar metadata in the source HEX file.</p>
+<p>Columns of the HEX are output in a specific order, based on configuration:
+—done with <cite>hex_to_f</cite>, <cite>hex_to_v</cite>—
+1) Data from the instrument (written to netCDF as <cite>engineering</cite>)</p>
+<blockquote>
+<div><ol class="loweralpha simple">
+<li><p>Frequency (3 bytes each)</p></li>
+<li><p>Voltage (12 bits each)</p></li>
+</ol>
+</div></blockquote>
+<p>—this wrapper—
+2) Surface Par (3 bytes) (ODF historically has limited support for this)
+3) NMEA lat/lon (7 bytes)
+4) NMEA depth (3 bytes)
+5) NMEA time (4 bytes) (low byte first)
+6) Additional Data from the instrument</p>
+<blockquote>
+<div><ol class="loweralpha simple">
+<li><p>Pressure temp (12 bits)</p></li>
+<li><p>pump status (4 bits)</p></li>
+<li><p>modulo byte (1 byte)</p></li>
+</ol>
+</div></blockquote>
+<ol class="arabic simple" start="7">
+<li><p>System time (4 bytes) (low byte first)</p></li>
+</ol>
+<p>Information about these steps (bytes, equations) is available in SBE’s
+SBEDataProcessing and SeaSave manuals.</p>
+<p>Inputs:
+hex_data: xarray DataArray of the entire hex file
+cfg: the <cite>data.xmlcon_box</cite> from the XMLCON file, indicating which features
+are added to the HEX rows</p>
+</dd></dl>
 
 </section>
 </section>
@@ -355,6 +456,10 @@
 <li><a class="reference internal" href="#sbe.channels.get_volt_indicies"><code class="docutils literal notranslate"><span class="pre">get_volt_indicies()</span></code></a></li>
 <li><a class="reference internal" href="#sbe.channels.get_voltage"><code class="docutils literal notranslate"><span class="pre">get_voltage()</span></code></a></li>
 <li><a class="reference internal" href="#sbe.channels.get_frequency"><code class="docutils literal notranslate"><span class="pre">get_frequency()</span></code></a></li>
+<li><a class="reference internal" href="#sbe.channels._sbe_time"><code class="docutils literal notranslate"><span class="pre">_sbe_time()</span></code></a></li>
+<li><a class="reference internal" href="#sbe.channels._nmeaposition"><code class="docutils literal notranslate"><span class="pre">_nmeaposition()</span></code></a></li>
+<li><a class="reference internal" href="#sbe.channels._sbe9core"><code class="docutils literal notranslate"><span class="pre">_sbe9core()</span></code></a></li>
+<li><a class="reference internal" href="#sbe.channels.get_metadata"><code class="docutils literal notranslate"><span class="pre">get_metadata()</span></code></a></li>
 </ul>
 </li>
 </ul>
