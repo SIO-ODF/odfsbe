@@ -48,9 +48,3 @@ dmypy.json
 docs/_build
 .ipynb_checkpoints/
 _version.py
-
-# ignore seabird files
-*.hex
-*.xmlcon
-*.bl
-*.hdr
