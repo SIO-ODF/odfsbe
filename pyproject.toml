@@ -28,6 +28,7 @@ dev = [
     "furo>=2024.8.6",
     "mypy>=1.15.0",
     "myst-parser>=4.0.1",
+    "pandas-stubs>=2.2.3.241126",
     "pre-commit>=4.1.0",
     "pytest>=8.3.4",
     "pytest-cov>=6.0.0",

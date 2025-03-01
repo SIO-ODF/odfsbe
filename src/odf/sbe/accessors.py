@@ -1,4 +1,6 @@
 from collections import ChainMap
+from collections.abc import Mapping
+from functools import cached_property
 from hashlib import md5
 from os import PathLike
 from pathlib import Path
@@ -7,11 +9,20 @@ import xarray as xr
 
 from odf.sbe.io import string_writer, write_path
 
-from .channels import get_frequency, get_voltage
+from .channels import (
+    get_frequency as _get_frequency,
+)
+from .channels import (
+    get_metadata,
+)
+from .channels import (
+    get_voltage as _get_voltage,
+)
+from .parsers import parse_xmlcon
 
 
 @xr.register_dataset_accessor("sbe")
-class SBEAccessor:
+class SBEAccessor(Mapping):
     def __init__(self, xarray_object: xr.Dataset):
         self._obj = xarray_object
 
@@ -113,12 +124,68 @@ class SBEAccessor:
         if "bl" in self._obj:
             self.to_bl(_path, check=check)
 
-    def __getattr__(self, name):
-        if name.startswith("f"):
+    def _xmlcon(self):
+        return parse_xmlcon(self._obj.xmlcon)
+
+    def get_frequency(self, freq: int):
+        if freq + 1 > self.num_frequencies:
+            raise IndexError()
+        return _get_frequency(self._obj.hex, freq)
+
+    def get_voltage(self, voltage: int):
+        frequencies_suppressed = self.config["FrequencyChannelsSuppressed"]
+        if voltage + 1 > self.num_voltages:
+            raise IndexError()
+        return _get_voltage(self._obj.hex, voltage, frequencies_suppressed)
+
+    @property
+    def num_frequencies(self) -> int:
+        return 5 - self.config["FrequencyChannelsSuppressed"]
+
+    @property
+    def num_voltages(self) -> int:
+        return 8 - self.config["VoltageWordsSuppressed"]
+
+    @property
+    def config(self):
+        return self._xmlcon()[0]
+
+    @property
+    def sensors(self):
+        return self._xmlcon()[1]
+
+    def serialize(self):
+        new_obj = self._obj.copy()
+        new_obj.update(self)
+        return new_obj
+
+    @cached_property
+    def _meta(self):
+        """
+        Write out metadata columns using the wrapper
+        """
+        return get_metadata(self._obj.hex, self.config)
+
+    @property
+    def _names(self):
+        frequencies = [f"f{idx}" for idx in range(self.num_frequencies)]
+        voltages = [f"v{idx}" for idx in range(self.num_voltages)]
+        return [*frequencies, *voltages, *self._meta]
+
+    def __getitem__(self, name):
+        if name not in self._names:
+            raise KeyError()
+        if name in self._meta:
+            return self._meta[name]
+        elif name.startswith("f"):
             channel = int(name[1:])
-            return get_frequency(self._obj.hex, channel)
+            return self.get_frequency(channel)
         elif name.startswith("v"):
             channel = int(name[1:])
-            return get_voltage(self._obj.hex, channel, 0)
+            return self.get_voltage(channel)
 
-        return super().__getattribute__(name)
+    def __len__(self):
+        return len(self._names)
+
+    def __iter__(self):
+        return iter(self._names)
