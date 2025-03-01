@@ -133,7 +133,7 @@ def _nmeaposition(bytes_in: xr.DataArray):
     lon.name = "longitude"
     flag_new_fix.name = "newpos"
 
-    return xr.Dataset({var.name: var for var in [lat, lon, flag_new_fix]})
+    return {var.name: var for var in [lat, lon, flag_new_fix]}
 
 
 def _sbe9core(bytes_in: xr.DataArray):
@@ -169,9 +169,7 @@ def _sbe9core(bytes_in: xr.DataArray):
     modulo = bytes_in[:, 2]
     modulo.name = "mod"
 
-    return xr.Dataset(
-        {var.name: var for var in [temp, pump, switch, sampler, modem, modulo]}
-    )
+    return {var.name: var for var in [temp, pump, switch, sampler, modem, modulo]}
 
 
 def get_metadata(hex_data: xr.DataArray, cfg):
@@ -215,7 +213,7 @@ def get_metadata(hex_data: xr.DataArray, cfg):
     ix_tracker = start_byte_ix
 
     # Initialize an xarray Dataset
-    meta_out = xr.Dataset()
+    meta_out = {}
 
     # Metadata is in a specific order. If it's there, extract specific sizes
     # and increment the current column index. If it isn't, don't increment.
@@ -237,7 +235,7 @@ def get_metadata(hex_data: xr.DataArray, cfg):
         data_to_write = _nmeaposition(col_extracts)
         ix_tracker += 7
         #   Unpack to variable in the dataset
-        meta_out = meta_out.merge(data_to_write)
+        meta_out.update(data_to_write)
 
     # nmea_depth_data
     if cfg["NmeaDepthDataAdded"]:
@@ -258,7 +256,7 @@ def get_metadata(hex_data: xr.DataArray, cfg):
     col_extracts = hex_data[:, ix_tracker : ix_tracker + 3]
     data_to_write = _sbe9core(col_extracts)
     ix_tracker += 3
-    meta_out = meta_out.merge(data_to_write)
+    meta_out.update(data_to_write)
 
     # scan_time
     if cfg["ScanTimeAdded"]:
