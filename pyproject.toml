@@ -12,7 +12,7 @@ dependencies = [
 [build-system]
 build-backend = "setuptools.build_meta"
 requires = [
-  "setuptools>=42",
+  "setuptools>=61.0",
   "setuptools-scm>=7",
 ]
 
