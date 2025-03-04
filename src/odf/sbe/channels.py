@@ -8,7 +8,7 @@ import numpy as np
 import xarray as xr
 
 
-def get_volt_indicies(n):
+def get_volt_indicies(n: int):
     """
     Calculate the HEX indices of a given voltage channel
     """
@@ -17,7 +17,7 @@ def get_volt_indicies(n):
     return start + high, start + high + 1, 1 - high
 
 
-def get_voltage(hex, channel, freq_supressed):
+def get_voltage(hex: xr.DataArray, channel: int, freq_supressed: int):
     """
     Compute voltage for given voltage channel
     """
