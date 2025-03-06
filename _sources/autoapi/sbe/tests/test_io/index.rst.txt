@@ -1,0 +1,19 @@
+sbe.tests.test_io
+=================
+
+.. py:module:: sbe.tests.test_io
+
+
+Functions
+---------
+
+.. autoapisummary::
+
+   sbe.tests.test_io.test_read_hex
+
+
+Module Contents
+---------------
+
+.. py:function:: test_read_hex(tmp_path)
+

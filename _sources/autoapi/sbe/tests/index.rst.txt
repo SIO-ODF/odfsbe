@@ -11,5 +11,6 @@ Submodules
    :maxdepth: 1
 
    /autoapi/sbe/tests/test_channels/index
+   /autoapi/sbe/tests/test_io/index
 
 
