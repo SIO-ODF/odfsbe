@@ -135,10 +135,12 @@ def read_hex(path, errors: ERRORS = "store", content_md5=True) -> xr.Dataset:
     xmlcon_name = Path(path.name).with_suffix(".xmlcon")
     bl_name = Path(path.name).with_suffix(".bl")
     hdr_name = Path(path.name).with_suffix(".hdr")
+    mrk_name = Path(path.name).with_suffix(".mrk")
 
     xmlcon_path = list(root.glob(str(xmlcon_name), case_sensitive=False))
     bl_path = list(root.glob(str(bl_name), case_sensitive=False))
     hdr_path = list(root.glob(str(hdr_name), case_sensitive=False))
+    mrk_path = list(root.glob(str(mrk_name), case_sensitive=False))
 
     # TODO: handle more then 1 found file for the above
 
@@ -163,6 +165,11 @@ def read_hex(path, errors: ERRORS = "store", content_md5=True) -> xr.Dataset:
     if len(hdr_path) == 1:
         input_datasets.append(
             string_loader(hdr_path[0], "hdr", encoding="CP437", content_md5=content_md5)
+        )
+
+    if len(mrk_path) == 1:
+        input_datasets.append(
+            string_loader(mrk_path[0], "mrk", encoding="CP437", content_md5=content_md5)
         )
 
     return xr.merge(input_datasets)
