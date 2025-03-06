@@ -1,8 +1,7 @@
-import pytest
+
+import xarray as xr
 
 import odf.sbe.io as odf_io
-import xarray as xr
-from pathlib import Path
 
 
 def test_read_hex(tmp_path):
