@@ -43,7 +43,26 @@ def test_get_volt_indicies(channel, expected):
 )    
 def test_get_voltage(channel, f_s, expected):
     assert channels.get_voltage(sample_line, channel, f_s).item() == expected
-    with pytest.raises(TypeError) as exc_info:
+    with pytest.raises(TypeError) as err:
         channels.get_voltage(sample_line, "6", 0)
-    
-    assert "unsupported operand type(s) for //: 'str' and 'int'" in str(exc_info.value)
+    assert "unsupported operand type(s) for //: 'str' and 'int'" in str(err.value)
+
+@pytest.mark.parametrize(
+    "channel, expected",
+    [
+        (0, (20 * (256**2) + 77 * 256 + 30) / 256),
+        (1, (27 * (256**2) + 142 * 256 + 27) / 256),
+        (2, (129 * (256**2) + 180 * 256 + 180) / 256),
+        (3, (18 * (256**2) + 153 * 256 + 136) / 256),
+        (4, (23 * (256**2) + 156 * 256 + 189) / 256),
+    ],
+)
+def test_get_frequency(channel, expected):
+    assert channels.get_frequency(sample_line, channel)[0] == expected
+
+    with pytest.raises(TypeError) as err:
+        channels.get_frequency("not an array", 0)
+    assert "string indices must be integers, not 'tuple'" in str(err.value)
+    with pytest.raises(IndexError) as err:
+        channels.get_frequency(sample_line, "0")
+    assert "only integers, slices (`:`)" in str(err.value)
