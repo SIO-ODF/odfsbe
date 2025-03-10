@@ -34,7 +34,7 @@ def get_voltage(hex: xr.DataArray, channel: int, freq_supressed: int):
     return 5 * (1 - (data / 4095))
 
 
-def get_frequency(hex, channel):
+def get_frequency(hex: xr.DataArray, channel: int):
     """
     Compute frequency for given frequency channel
     """
