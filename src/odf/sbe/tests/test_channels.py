@@ -88,3 +88,29 @@ def test_nmeaposition():
     with pytest.raises(AttributeError) as err:
         channels._nmeaposition("a string")
     assert "'str' object has no attribute 'astype'" in str(err.value)
+
+def test_sbe_time():
+    bytes_in = xr.DataArray(sample_line[:, 37:41],
+                            dims=["scan", "bytes_per_scan"])
+
+    result = channels._sbe_time(bytes_in, sbe_type="ScanTime")
+    assert result.name == "ScanTime"
+    epoch = np.datetime64("1970-01-01")
+    byte_positions = np.array([1 << 0, 1 << 8, 1 << 16, 1 << 24], dtype=np.uint32)
+    expected_timestamp = np.datetime64(
+        epoch + np.timedelta64(
+            (bytes_in.astype(np.uint32) * byte_positions).sum().item(), "s")) 
+
+    assert np.datetime64(result.item()) == expected_timestamp
+
+    result = channels._sbe_time(bytes_in, sbe_type="NmeaTime")
+    assert result.name == "NmeaTime"
+    epoch = np.datetime64("2000-01-01")
+    byte_positions = np.array([1 << 0, 1 << 8, 1 << 16, 1 << 24], dtype=np.uint32)
+    expected_timestamp = np.datetime64(
+        epoch + np.timedelta64(
+            (bytes_in.astype(np.uint32) * byte_positions).sum().item(), "s")) 
+
+    assert np.datetime64(result.item()) == expected_timestamp
+
+
