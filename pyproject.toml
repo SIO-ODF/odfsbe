@@ -28,6 +28,7 @@ fallback_version = "9999"
 [dependency-groups]
 dev = [
     "furo>=2024.8.6",
+    "ipykernel>=6.29.5",
     "mypy>=1.15.0",
     "myst-parser>=4.0.1",
     "pandas-stubs>=2.2.3.241126",
