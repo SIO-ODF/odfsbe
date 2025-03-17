@@ -11,53 +11,19 @@ from odf.sbe import channels
 #       NMEA la/lon (7 bytes) [27:34]
 #       SBE9 core (3 bytes) [34:37]
 #       System time "scan" (4 bytes) [37:41]
+# fmt: off
 sample_line = np.array(
     [
         [
-            20,
-            77,
-            30,
-            27,
-            142,
-            27,
-            129,
-            180,
-            180,
-            18,
-            153,
-            136,
-            23,
-            156,
-            189,
-            253,
-            225,
-            86,
-            185,
-            26,
-            68,
-            0,
-            95,
-            245,
-            130,
-            111,
-            255,
-            24,
-            205,
-            5,
-            101,
-            126,
-            54,
-            0,
-            144,
-            211,
-            184,
-            193,
-            207,
-            114,
-            98,
+            20,  77,  30,  27, 142,  27, 129, 180, 180,  18, 153, 136,  23, 156, 189,
+            253, 225,  86, 185,  26,  68,   0,  95, 245, 130, 111, 255,
+            24, 205,   5, 101, 126,  54,   0,
+            144, 211, 184,
+            193, 207, 114,  98
         ]
     ],
 )
+# fmt: on
 
 
 @pytest.mark.parametrize(
@@ -211,57 +177,16 @@ def test_metadata():
     assert metadata["pump"]
 
     #   Line 0, before the pumps have turned on. Same cast, same config.
+    # fmt: off
     hex_data = xr.DataArray(
-        np.array(
-            [
-                [
-                    19,
-                    116,
-                    115,
-                    11,
-                    67,
-                    236,
-                    129,
-                    167,
-                    153,
-                    18,
-                    60,
-                    31,
-                    10,
-                    32,
-                    183,
-                    254,
-                    81,
-                    12,
-                    186,
-                    58,
-                    140,
-                    1,
-                    175,
-                    246,
-                    182,
-                    239,
-                    255,
-                    24,
-                    205,
-                    6,
-                    101,
-                    126,
-                    49,
-                    0,
-                    145,
-                    66,
-                    120,
-                    62,
-                    201,
-                    114,
-                    98,
-                ]
-            ],
-            dtype=np.uint8,
-        ),
-        dims=["scan", "bytes_per_scan"],
-    ).astype("uint8")
+        np.array([[
+            19, 116, 115,  11,  67, 236, 129, 167, 153,  18,  60,  31,  10,
+            32, 183, 254,  81,  12, 186,  58, 140,   1, 175, 246, 182, 239,
+            255,  24, 205,   6, 101, 126,  49,   0, 145,  66, 120,  62, 201,
+            114,  98
+        ]], dtype=np.uint8),
+        dims=["scan", "bytes_per_scan"]).astype("uint8")
+    # fmt: on
 
     metadata = channels.get_metadata(hex_data, cfg)
     assert not metadata["pump"]
