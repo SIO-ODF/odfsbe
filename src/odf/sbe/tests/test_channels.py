@@ -4,7 +4,7 @@ import xarray as xr
 
 from odf.sbe import channels
 
-#   Create a testing line (RR2204, 00301 line 40,000)
+#   Create a testing line (RR2204, 00301 line 40,000). From xmlcon:
 #   5xF (15 bytes) [0:15]
 #   8xV (12 bytes) [15:27]
 #   Metadata:
@@ -106,7 +106,6 @@ def test_sbe_time():
     result = channels._sbe_time(bytes_in, sbe_type="NmeaTime")
     assert result.name == "NmeaTime"
     epoch = np.datetime64("2000-01-01")
-    byte_positions = np.array([1 << 0, 1 << 8, 1 << 16, 1 << 24], dtype=np.uint32)
     expected_timestamp = np.datetime64(
         epoch + np.timedelta64(
             (bytes_in.astype(np.uint32) * byte_positions).sum().item(), "s")) 
@@ -132,3 +131,37 @@ def test_sbe9core():
     assert result["modem"].item() == expected_modem
     assert result["mod"].item() == expected_modulo
 
+def test_metadata():
+    hex_data = xr.DataArray(sample_line, dims=["scan", "bytes_per_scan"]).astype("uint8")
+    cfg = {
+        "FrequencyChannelsSuppressed": 0,
+        "VoltageWordsSuppressed": 0,
+        "SurfaceParVoltageAdded": 0,
+        "NmeaPositionDataAdded": 1,
+        "NmeaDepthDataAdded": 0,
+        "NmeaTimeAdded": 0,
+        "ScanTimeAdded": 1,
+    }
+    metadata = channels.get_metadata(hex_data, cfg)
+
+    assert isinstance(metadata, dict)
+    assert "ScanTime" in metadata
+    assert np.array_equal(metadata["ScanTime"],
+                          np.array(['2022-05-04T19:10:57'], dtype='datetime64[s]'))
+    assert metadata["latitude"] == 32.50698
+    assert metadata["newpos"] == False
+    assert metadata["pump"] == True
+
+    #   Line 0, before the pumps have turned on. Same cast, same config.
+    hex_data = xr.DataArray(
+        np.array([[
+            19, 116, 115,  11,  67, 236, 129, 167, 153,  18,  60,  31,  10,
+            32, 183, 254,  81,  12, 186,  58, 140,   1, 175, 246, 182, 239,
+            255,  24, 205,   6, 101, 126,  49,   0, 145,  66, 120,  62, 201,
+            114,  98
+        ]], dtype=np.uint8),
+        dims=["scan", "bytes_per_scan"]).astype("uint8")
+
+    metadata = channels.get_metadata(hex_data, cfg)
+    assert metadata["pump"] == False
+    
