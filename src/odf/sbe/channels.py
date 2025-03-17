@@ -172,7 +172,7 @@ def _sbe9core(bytes_in: xr.DataArray):
     return {var.name: var for var in [temp, pump, switch, sampler, modem, modulo]}
 
 
-def get_metadata(hex_data: xr.DataArray, cfg):
+def get_metadata(hex_data: xr.DataArray, cfg: dict):
     """
     A wrapper of sorts to handle columnar metadata in the source HEX file.
 
@@ -212,7 +212,7 @@ def get_metadata(hex_data: xr.DataArray, cfg):
     #   Track where we are in the metadata columns
     ix_tracker = start_byte_ix
 
-    # Initialize an xarray Dataset
+    # Initialize a dictionary for returning the metadata
     meta_out = {}
 
     # Metadata is in a specific order. If it's there, extract specific sizes
