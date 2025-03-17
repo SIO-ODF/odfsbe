@@ -5,11 +5,11 @@ import xarray as xr
 from odf.sbe import channels
 
 #   Create a testing line (RR2204, 00301 line 40,000)
-#   5xF (15 bytes) [0:14]
-#   8xV (12 bytes) [15:26]
+#   5xF (15 bytes) [0:15]
+#   8xV (12 bytes) [15:27]
 #   Metadata:
-#       NMEA la/lon (7 bytes) [27:33]
-#       SBE9 core (3 bytes) [34:36]
+#       NMEA la/lon (7 bytes) [27:34]
+#       SBE9 core (3 bytes) [34:37]
 #       System time "scan" (4 bytes) [37:41]
 sample_line = np.array([[
     20,  77,  30,  27, 142,  27, 129, 180, 180,  18, 153, 136,  23, 156, 189, 
@@ -113,4 +113,22 @@ def test_sbe_time():
 
     assert np.datetime64(result.item()) == expected_timestamp
 
+def test_sbe9core():
+    bytes_in = xr.DataArray(sample_line[:, 34:37], dims=["scan", "bytes_per_scan"]).astype("uint8")
+    result = channels._sbe9core(bytes_in)
+
+    expected_ptemp = ((144 << 8 | 211) >> 4)
+    expected_pump = bool(211 & 1)
+    expected_switch = bool((211 >> 1) & 1)
+    expected_sampler = bool((211 >> 2) & 1)
+    expected_modem = bool((211 >> 3) & 1)
+    expected_modulo = 184
+
+    assert all(key in result for key in ["ptempC", "pump", "bct", "HBBotCls", "modem", "mod"])
+    assert result["ptempC"].item() == expected_ptemp
+    assert result["pump"].item() == expected_pump
+    assert result["bct"].item() == expected_switch
+    assert result["HBBotCls"].item() == expected_sampler
+    assert result["modem"].item() == expected_modem
+    assert result["mod"].item() == expected_modulo
 
