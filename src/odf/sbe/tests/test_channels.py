@@ -12,7 +12,7 @@ from odf.sbe import channels
 #       SBE9 core (3 bytes) [34:37]
 #       System time "scan" (4 bytes) [37:41]
 sample_line = np.array([[
-    20,  77,  30,  27, 142,  27, 129, 180, 180,  18, 153, 136,  23, 156, 189, 
+    20,  77,  30,  27, 142,  27, 129, 180, 180,  18, 153, 136,  23, 156, 189,
     253, 225,  86, 185,  26,  68,   0,  95, 245, 130, 111, 255,
     24, 205,   5, 101, 126,  54,   0,
     144, 211, 184,
@@ -83,7 +83,7 @@ def test_nmeaposition():
     assert all(key in result for key in ["latitude", "longitude", "newpos"])
     assert result['latitude'].item() == (24 << 16 | 205 << 8 | 5) / 50000
     assert result['longitude'].item() == (101 << 16 | 126 << 8 | 54) / 50000
-    assert result['newpos'].item() == False
+    assert not result['newpos'].item()
 
     with pytest.raises(AttributeError) as err:
         channels._nmeaposition("a string")
@@ -99,7 +99,7 @@ def test_sbe_time():
     byte_positions = np.array([1 << 0, 1 << 8, 1 << 16, 1 << 24], dtype=np.uint32)
     expected_timestamp = np.datetime64(
         epoch + np.timedelta64(
-            (bytes_in.astype(np.uint32) * byte_positions).sum().item(), "s")) 
+            (bytes_in.astype(np.uint32) * byte_positions).sum().item(), "s"))
 
     assert np.datetime64(result.item()) == expected_timestamp
 
@@ -108,7 +108,7 @@ def test_sbe_time():
     epoch = np.datetime64("2000-01-01")
     expected_timestamp = np.datetime64(
         epoch + np.timedelta64(
-            (bytes_in.astype(np.uint32) * byte_positions).sum().item(), "s")) 
+            (bytes_in.astype(np.uint32) * byte_positions).sum().item(), "s"))
 
     assert np.datetime64(result.item()) == expected_timestamp
 
@@ -149,8 +149,8 @@ def test_metadata():
     assert np.array_equal(metadata["ScanTime"],
                           np.array(['2022-05-04T19:10:57'], dtype='datetime64[s]'))
     assert metadata["latitude"] == 32.50698
-    assert metadata["newpos"] == False
-    assert metadata["pump"] == True
+    assert not metadata["newpos"]
+    assert metadata["pump"]
 
     #   Line 0, before the pumps have turned on. Same cast, same config.
     hex_data = xr.DataArray(
@@ -163,5 +163,4 @@ def test_metadata():
         dims=["scan", "bytes_per_scan"]).astype("uint8")
 
     metadata = channels.get_metadata(hex_data, cfg)
-    assert metadata["pump"] == False
-    
+    assert not metadata["pump"]
