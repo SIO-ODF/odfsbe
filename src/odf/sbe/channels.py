@@ -8,7 +8,7 @@ import numpy as np
 import xarray as xr
 
 
-def get_volt_indicies(n):
+def get_volt_indicies(n: int):
     """
     Calculate the HEX indices of a given voltage channel
     """
@@ -17,7 +17,7 @@ def get_volt_indicies(n):
     return start + high, start + high + 1, 1 - high
 
 
-def get_voltage(hex, channel, freq_supressed):
+def get_voltage(hex: xr.DataArray, channel: int, freq_supressed: int):
     """
     Compute voltage for given voltage channel
     """
@@ -34,7 +34,7 @@ def get_voltage(hex, channel, freq_supressed):
     return 5 * (1 - (data / 4095))
 
 
-def get_frequency(hex, channel):
+def get_frequency(hex: xr.DataArray, channel: int):
     """
     Compute frequency for given frequency channel
     """
@@ -172,7 +172,7 @@ def _sbe9core(bytes_in: xr.DataArray):
     return {var.name: var for var in [temp, pump, switch, sampler, modem, modulo]}
 
 
-def get_metadata(hex_data: xr.DataArray, cfg):
+def get_metadata(hex_data: xr.DataArray, cfg: dict):
     """
     A wrapper of sorts to handle columnar metadata in the source HEX file.
 
@@ -212,7 +212,7 @@ def get_metadata(hex_data: xr.DataArray, cfg):
     #   Track where we are in the metadata columns
     ix_tracker = start_byte_ix
 
-    # Initialize an xarray Dataset
+    # Initialize a dictionary for returning the metadata
     meta_out = {}
 
     # Metadata is in a specific order. If it's there, extract specific sizes
