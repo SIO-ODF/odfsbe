@@ -258,6 +258,18 @@
         <article role="main" id="furo-main-content">
           <section id="module-sbe.tests.test_channels">
 <span id="sbe-tests-test-channels"></span><h1>sbe.tests.test_channels<a class="headerlink" href="#module-sbe.tests.test_channels" title="Link to this heading">¶</a></h1>
+<section id="attributes">
+<h2>Attributes<a class="headerlink" href="#attributes" title="Link to this heading">¶</a></h2>
+<div class="table-wrapper autosummary longtable docutils container">
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sbe.tests.test_channels.sample_line" title="sbe.tests.test_channels.sample_line"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sample_line</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
 <section id="functions">
 <h2>Functions<a class="headerlink" href="#functions" title="Link to this heading">¶</a></h2>
 <div class="table-wrapper autosummary longtable docutils container">
@@ -266,15 +278,68 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#sbe.tests.test_channels.test_get_volt_indicies" title="sbe.tests.test_channels.test_get_volt_indicies"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_get_volt_indicies</span></code></a>(channel, expected)</p></td>
 <td><p></p></td>
 </tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sbe.tests.test_channels.test_get_voltage" title="sbe.tests.test_channels.test_get_voltage"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_get_voltage</span></code></a>(channel, f_s, expected)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sbe.tests.test_channels.test_get_frequency" title="sbe.tests.test_channels.test_get_frequency"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_get_frequency</span></code></a>(channel, expected)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sbe.tests.test_channels.test_nmeaposition" title="sbe.tests.test_channels.test_nmeaposition"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_nmeaposition</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sbe.tests.test_channels.test_sbe_time" title="sbe.tests.test_channels.test_sbe_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_sbe_time</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sbe.tests.test_channels.test_sbe9core" title="sbe.tests.test_channels.test_sbe9core"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_sbe9core</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sbe.tests.test_channels.test_metadata" title="sbe.tests.test_channels.test_metadata"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_metadata</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
 </tbody>
 </table>
 </div>
 </section>
 <section id="module-contents">
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">¶</a></h2>
+<dl class="py data">
+<dt class="sig sig-object py" id="sbe.tests.test_channels.sample_line">
+<span class="sig-prename descclassname"><span class="pre">sbe.tests.test_channels.</span></span><span class="sig-name descname"><span class="pre">sample_line</span></span><a class="headerlink" href="#sbe.tests.test_channels.sample_line" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="sbe.tests.test_channels.test_get_volt_indicies">
 <span class="sig-prename descclassname"><span class="pre">sbe.tests.test_channels.</span></span><span class="sig-name descname"><span class="pre">test_get_volt_indicies</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sbe.tests.test_channels.test_get_volt_indicies" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sbe.tests.test_channels.test_get_voltage">
+<span class="sig-prename descclassname"><span class="pre">sbe.tests.test_channels.</span></span><span class="sig-name descname"><span class="pre">test_get_voltage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f_s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sbe.tests.test_channels.test_get_voltage" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sbe.tests.test_channels.test_get_frequency">
+<span class="sig-prename descclassname"><span class="pre">sbe.tests.test_channels.</span></span><span class="sig-name descname"><span class="pre">test_get_frequency</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">channel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expected</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sbe.tests.test_channels.test_get_frequency" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sbe.tests.test_channels.test_nmeaposition">
+<span class="sig-prename descclassname"><span class="pre">sbe.tests.test_channels.</span></span><span class="sig-name descname"><span class="pre">test_nmeaposition</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sbe.tests.test_channels.test_nmeaposition" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sbe.tests.test_channels.test_sbe_time">
+<span class="sig-prename descclassname"><span class="pre">sbe.tests.test_channels.</span></span><span class="sig-name descname"><span class="pre">test_sbe_time</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sbe.tests.test_channels.test_sbe_time" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sbe.tests.test_channels.test_sbe9core">
+<span class="sig-prename descclassname"><span class="pre">sbe.tests.test_channels.</span></span><span class="sig-name descname"><span class="pre">test_sbe9core</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sbe.tests.test_channels.test_sbe9core" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sbe.tests.test_channels.test_metadata">
+<span class="sig-prename descclassname"><span class="pre">sbe.tests.test_channels.</span></span><span class="sig-name descname"><span class="pre">test_metadata</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sbe.tests.test_channels.test_metadata" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </section>
@@ -336,9 +401,17 @@
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">sbe.tests.test_channels</a><ul>
+<li><a class="reference internal" href="#attributes">Attributes</a></li>
 <li><a class="reference internal" href="#functions">Functions</a></li>
 <li><a class="reference internal" href="#module-contents">Module Contents</a><ul>
+<li><a class="reference internal" href="#sbe.tests.test_channels.sample_line"><code class="docutils literal notranslate"><span class="pre">sample_line</span></code></a></li>
 <li><a class="reference internal" href="#sbe.tests.test_channels.test_get_volt_indicies"><code class="docutils literal notranslate"><span class="pre">test_get_volt_indicies()</span></code></a></li>
+<li><a class="reference internal" href="#sbe.tests.test_channels.test_get_voltage"><code class="docutils literal notranslate"><span class="pre">test_get_voltage()</span></code></a></li>
+<li><a class="reference internal" href="#sbe.tests.test_channels.test_get_frequency"><code class="docutils literal notranslate"><span class="pre">test_get_frequency()</span></code></a></li>
+<li><a class="reference internal" href="#sbe.tests.test_channels.test_nmeaposition"><code class="docutils literal notranslate"><span class="pre">test_nmeaposition()</span></code></a></li>
+<li><a class="reference internal" href="#sbe.tests.test_channels.test_sbe_time"><code class="docutils literal notranslate"><span class="pre">test_sbe_time()</span></code></a></li>
+<li><a class="reference internal" href="#sbe.tests.test_channels.test_sbe9core"><code class="docutils literal notranslate"><span class="pre">test_sbe9core()</span></code></a></li>
+<li><a class="reference internal" href="#sbe.tests.test_channels.test_metadata"><code class="docutils literal notranslate"><span class="pre">test_metadata()</span></code></a></li>
 </ul>
 </li>
 </ul>

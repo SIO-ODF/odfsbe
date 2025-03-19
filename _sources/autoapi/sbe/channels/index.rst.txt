@@ -26,17 +26,17 @@ Functions
 Module Contents
 ---------------
 
-.. py:function:: get_volt_indicies(n)
+.. py:function:: get_volt_indicies(n: int)
 
    Calculate the HEX indices of a given voltage channel
 
 
-.. py:function:: get_voltage(hex, channel, freq_supressed)
+.. py:function:: get_voltage(hex: xarray.DataArray, channel: int, freq_supressed: int)
 
    Compute voltage for given voltage channel
 
 
-.. py:function:: get_frequency(hex, channel)
+.. py:function:: get_frequency(hex: xarray.DataArray, channel: int)
 
    Compute frequency for given frequency channel
 
@@ -94,7 +94,7 @@ Module Contents
    The modulo word gets 1 byte (8 bits)
 
 
-.. py:function:: get_metadata(hex_data: xarray.DataArray, cfg)
+.. py:function:: get_metadata(hex_data: xarray.DataArray, cfg: dict)
 
    A wrapper of sorts to handle columnar metadata in the source HEX file.
 

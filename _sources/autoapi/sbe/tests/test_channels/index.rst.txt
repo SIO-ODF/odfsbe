@@ -4,16 +4,44 @@ sbe.tests.test_channels
 .. py:module:: sbe.tests.test_channels
 
 
+Attributes
+----------
+
+.. autoapisummary::
+
+   sbe.tests.test_channels.sample_line
+
+
 Functions
 ---------
 
 .. autoapisummary::
 
    sbe.tests.test_channels.test_get_volt_indicies
+   sbe.tests.test_channels.test_get_voltage
+   sbe.tests.test_channels.test_get_frequency
+   sbe.tests.test_channels.test_nmeaposition
+   sbe.tests.test_channels.test_sbe_time
+   sbe.tests.test_channels.test_sbe9core
+   sbe.tests.test_channels.test_metadata
 
 
 Module Contents
 ---------------
 
+.. py:data:: sample_line
+
 .. py:function:: test_get_volt_indicies(channel, expected)
+
+.. py:function:: test_get_voltage(channel, f_s, expected)
+
+.. py:function:: test_get_frequency(channel, expected)
+
+.. py:function:: test_nmeaposition()
+
+.. py:function:: test_sbe_time()
+
+.. py:function:: test_sbe9core()
+
+.. py:function:: test_metadata()
 

@@ -293,19 +293,19 @@
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="sbe.channels.get_volt_indicies">
-<span class="sig-prename descclassname"><span class="pre">sbe.channels.</span></span><span class="sig-name descname"><span class="pre">get_volt_indicies</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sbe.channels.get_volt_indicies" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">sbe.channels.</span></span><span class="sig-name descname"><span class="pre">get_volt_indicies</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sbe.channels.get_volt_indicies" title="Link to this definition">¶</a></dt>
 <dd><p>Calculate the HEX indices of a given voltage channel</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sbe.channels.get_voltage">
-<span class="sig-prename descclassname"><span class="pre">sbe.channels.</span></span><span class="sig-name descname"><span class="pre">get_voltage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq_supressed</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sbe.channels.get_voltage" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">sbe.channels.</span></span><span class="sig-name descname"><span class="pre">get_voltage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">xarray.DataArray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq_supressed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sbe.channels.get_voltage" title="Link to this definition">¶</a></dt>
 <dd><p>Compute voltage for given voltage channel</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sbe.channels.get_frequency">
-<span class="sig-prename descclassname"><span class="pre">sbe.channels.</span></span><span class="sig-name descname"><span class="pre">get_frequency</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sbe.channels.get_frequency" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">sbe.channels.</span></span><span class="sig-name descname"><span class="pre">get_frequency</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">xarray.DataArray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sbe.channels.get_frequency" title="Link to this definition">¶</a></dt>
 <dd><p>Compute frequency for given frequency channel</p>
 </dd></dl>
 
@@ -358,7 +358,7 @@ The modulo word gets 1 byte (8 bits)</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sbe.channels.get_metadata">
-<span class="sig-prename descclassname"><span class="pre">sbe.channels.</span></span><span class="sig-name descname"><span class="pre">get_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hex_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">xarray.DataArray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cfg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sbe.channels.get_metadata" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">sbe.channels.</span></span><span class="sig-name descname"><span class="pre">get_metadata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hex_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">xarray.DataArray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sbe.channels.get_metadata" title="Link to this definition">¶</a></dt>
 <dd><p>A wrapper of sorts to handle columnar metadata in the source HEX file.</p>
 <p>Columns of the HEX are output in a specific order, based on configuration:
 —done with <cite>hex_to_f</cite>, <cite>hex_to_v</cite>—
