@@ -19,6 +19,7 @@ Functions
 
    sbe.io.write_path
    sbe.io.string_writer
+   sbe.io.guess_scan_lengths
    sbe.io.hex_to_dataset
    sbe.io.string_loader
    sbe.io.read_hex
@@ -32,6 +33,14 @@ Module Contents
 .. py:function:: write_path(data: bytes, path: pathlib.Path, filename: str | None = None)
 
 .. py:function:: string_writer(da: xarray.DataArray, check=True) -> bytes
+
+.. py:function:: guess_scan_lengths(hex: str) -> int
+
+   Try to determine how many hex chars should be in each data line
+
+   If the number of bytes is in the header, return that * 2
+   If not, return the most common scan length
+
 
 .. py:function:: hex_to_dataset(path: pathlib.Path, errors: ERRORS = 'store', encoding='CP437', content_md5=True) -> xarray.Dataset
 

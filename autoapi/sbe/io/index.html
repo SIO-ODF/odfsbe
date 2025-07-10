@@ -281,13 +281,16 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#sbe.io.string_writer" title="sbe.io.string_writer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">string_writer</span></code></a>(→ bytes)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sbe.io.hex_to_dataset" title="sbe.io.hex_to_dataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hex_to_dataset</span></code></a>(→ xarray.Dataset)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sbe.io.guess_scan_lengths" title="sbe.io.guess_scan_lengths"><code class="xref py py-obj docutils literal notranslate"><span class="pre">guess_scan_lengths</span></code></a>(→ int)</p></td>
+<td><p>Try to determine how many hex chars should be in each data line</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sbe.io.hex_to_dataset" title="sbe.io.hex_to_dataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hex_to_dataset</span></code></a>(→ xarray.Dataset)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#sbe.io.string_loader" title="sbe.io.string_loader"><code class="xref py py-obj docutils literal notranslate"><span class="pre">string_loader</span></code></a>(→ xarray.Dataset)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sbe.io.string_loader" title="sbe.io.string_loader"><code class="xref py py-obj docutils literal notranslate"><span class="pre">string_loader</span></code></a>(→ xarray.Dataset)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#sbe.io.read_hex" title="sbe.io.read_hex"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_hex</span></code></a>(→ xarray.Dataset)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#sbe.io.read_hex" title="sbe.io.read_hex"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_hex</span></code></a>(→ xarray.Dataset)</p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -310,6 +313,14 @@
 <dt class="sig sig-object py" id="sbe.io.string_writer">
 <span class="sig-prename descclassname"><span class="pre">sbe.io.</span></span><span class="sig-name descname"><span class="pre">string_writer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">da</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">xarray.DataArray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bytes</span></span></span><a class="headerlink" href="#sbe.io.string_writer" title="Link to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="sbe.io.guess_scan_lengths">
+<span class="sig-prename descclassname"><span class="pre">sbe.io.</span></span><span class="sig-name descname"><span class="pre">guess_scan_lengths</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hex</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#sbe.io.guess_scan_lengths" title="Link to this definition">¶</a></dt>
+<dd><p>Try to determine how many hex chars should be in each data line</p>
+<p>If the number of bytes is in the header, return that * 2
+If not, return the most common scan length</p>
+</dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="sbe.io.hex_to_dataset">
@@ -391,6 +402,7 @@
 <li><a class="reference internal" href="#sbe.io.ERRORS"><code class="docutils literal notranslate"><span class="pre">ERRORS</span></code></a></li>
 <li><a class="reference internal" href="#sbe.io.write_path"><code class="docutils literal notranslate"><span class="pre">write_path()</span></code></a></li>
 <li><a class="reference internal" href="#sbe.io.string_writer"><code class="docutils literal notranslate"><span class="pre">string_writer()</span></code></a></li>
+<li><a class="reference internal" href="#sbe.io.guess_scan_lengths"><code class="docutils literal notranslate"><span class="pre">guess_scan_lengths()</span></code></a></li>
 <li><a class="reference internal" href="#sbe.io.hex_to_dataset"><code class="docutils literal notranslate"><span class="pre">hex_to_dataset()</span></code></a></li>
 <li><a class="reference internal" href="#sbe.io.string_loader"><code class="docutils literal notranslate"><span class="pre">string_loader()</span></code></a></li>
 <li><a class="reference internal" href="#sbe.io.read_hex"><code class="docutils literal notranslate"><span class="pre">read_hex()</span></code></a></li>

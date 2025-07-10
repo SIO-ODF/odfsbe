@@ -27,7 +27,7 @@ Module Contents
    Parse the .bl file's text into lists of bottle fired and reset times.
 
 
-.. py:function:: parse_hdr(hdr)
+.. py:function:: parse_hdr(hdr: str)
 
    Parse the .hdr file's text into a dictionary.
 
