@@ -24,25 +24,28 @@ def parse_bl(bl):
     return log, resets
 
 
-def parse_hdr(hdr):
+def parse_hdr(hdr: str):
     """
     Parse the .hdr file's text into a dictionary.
     """
     comments = []
     hdr_dict = {}
     for line in hdr.splitlines():
-        if line.startswith("**"):
-            comments.append(line.strip("* "))
-            continue
-        if line == "*END*":
-            continue
         row = line.strip("* ")
-        if row.startswith("Sea-Bird SBE 9"):
+        if row == "END":
+            continue
+        if row.startswith("Sea-Bird SBE") and row.endswith("Data File:"):
+            hdr_dict["Data File"] = row.removeprefix("Sea-Bird SBE ").removesuffix(
+                " Data File:"
+            )
             continue
         if row.startswith("Software Version"):
             hdr_dict["Software Version"] = row.removeprefix("Software Version").strip()
             continue
-        key, value = row.split("=")
+        if "=" not in row:
+            comments.append(row)
+            continue
+        key, value = row.split("=", maxsplit=1)
         hdr_dict[key.strip()] = value.strip()
     hdr_dict["comments"] = "\n".join(comments)
     return hdr_dict
