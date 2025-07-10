@@ -1,3 +1,4 @@
+from collections import Counter
 from hashlib import md5
 from pathlib import Path
 from typing import Literal
@@ -31,6 +32,26 @@ def string_writer(da: xr.DataArray, check=True) -> bytes:
     return _out
 
 
+def guess_scan_lengths(hex: str) -> int:
+    """Try to determine how many hex chars should be in each data line
+
+    If the number of bytes is in the header, return that * 2
+    If not, return the most common scan length
+    """
+    data = hex.lower()
+    d_split = data.splitlines()  # maybe this is expensive so only do it once
+    # data can be large, this header is probably in the first ~32k of data
+    if "number of bytes per scan" in data[:4096]:
+        for line in d_split:
+            if "number of bytes per scan" in line.lower():
+                return int(line.split("= ")[1]) * 2
+
+    counter = Counter(
+        len(line) for line in filter(lambda x: not x.startswith("*"), d_split)
+    )
+    return counter.most_common(1)[0][0]
+
+
 def hex_to_dataset(
     path: Path, errors: ERRORS = "store", encoding="CP437", content_md5=True
 ) -> xr.Dataset:
@@ -41,22 +62,13 @@ def hex_to_dataset(
 
     error_idx = []
     error_lines = []
-    datalen = 0
+    linelen = guess_scan_lengths(hex) or 0
     header_len = 0
     for lineno, line in enumerate(hex.splitlines(), start=1):
-        if "number of bytes per scan" in line.lower():
-            datalen = int(line.split("= ")[1])
-            linelen = datalen * 2
-
         if line.startswith("*"):  # comment
             _comments.append(line)
             header_len = lineno
             continue
-
-        if datalen == 0:
-            raise ValueError(
-                f"Could not find number of bytes per scan in {lineno} lines"
-            )
 
         if len(line) != linelen:
             if errors == "raise":
