@@ -10,7 +10,7 @@ dependencies = [
 ]
 
 [project.urls]
-Documentation = https://sio-odf.github.io/odfsbe/
+Documentation = "https://sio-odf.github.io/odfsbe/"
 Repository = "https://github.com/SIO-ODF/odfsbe.git"
 
 [build-system]
