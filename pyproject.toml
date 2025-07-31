@@ -1,20 +1,23 @@
 [project]
 name = "odf.sbe"
-version = "0.2.0"
-description = "Add your description here"
+description = "A tool for converting SeaBird .HEX data to engineering units"
 readme = "README.md"
 requires-python = ">=3.12"
+dynamic = ["version"]
 dependencies = [
     "netcdf4>=1.7.2",
     "xarray>=2023.3.0",
 ]
+
+[project.urls]
+Documentation = https://sio-odf.github.io/odfsbe/
+Repository = "https://github.com/SIO-ODF/odfsbe.git"
 
 [build-system]
 build-backend = "setuptools.build_meta"
 requires = [
   "setuptools>=75.0",
   "setuptools-scm>=7",
-  "wheel",
 ]
 
 [tool.setuptools]
