@@ -6,7 +6,7 @@ requires-python = ">=3.12"
 dynamic = ["version"]
 dependencies = [
     "netcdf4>=1.7.2",
-    "xarray>=2023.3.0",
+    "xarray",
 ]
 
 [project.urls]
