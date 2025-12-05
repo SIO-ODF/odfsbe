@@ -1,11 +1,24 @@
+from importlib.resources import path  # this was undeprecated in python 3.13
+
 import xarray as xr
 
+import odf.sbe.accessors  # noqa: F401
 import odf.sbe.io as odf_io
+import odf.sbe.tests.data as test_data
+
+
+def test_out():
+    with path(test_data, "00101.nc") as fi:
+        ds = xr.load_dataset(fi)
+    with path(test_data, "00101.hex") as fi:
+        expected = fi.read_bytes()
+
+    assert ds.sbe.to_hex() == expected
 
 
 def test_read_hex(tmp_path):
     # Create test files
-    hex_content = """* Test header\nnumber of bytes per scan = 2\n0102\n0304"""
+    hex_content = """* Test header\nnumber of bytes per scan = 2\r\n0102\r\n0304"""
     xmlcon_content = "<xml>Test XMLCON</xml>"
     bl_content = "Test BL content"  #   mrk-like
     hdr_content = "Test HDR content"
