@@ -51,7 +51,7 @@ class SBEAccessor(Mapping):
             )
 
         # just prepare the header
-        header = "\r\n".join(_hex.attrs["header"].splitlines())
+        header = "\r\n".join(_hex.attrs["header"].split("\n"))
 
         # construct a dict that maps scan count to hex string
         # the hex_data is made as one big string all at once (very fast)

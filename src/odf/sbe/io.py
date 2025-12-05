@@ -58,13 +58,23 @@ def hex_to_dataset(
     _comments = []  #   hex header comments written by deck box/SeaSave
     out_idx = []  #   zero indexed "row" of the hex line, used for reconsturction of bad files
     out = []  #   hex bytes out
-    hex = path.read_text(encoding)
+    # TODO: use read_text when min python version 3.13
+    # hex = path.read_text(encoding, newline="")
+    with open(path, encoding=encoding, newline="") as f:
+        hex = f.read()
 
     error_idx = []
     error_lines = []
     linelen = guess_scan_lengths(hex) or 0
     header_len = 0
-    for lineno, line in enumerate(hex.splitlines(), start=1):
+
+    # we are using this instead of splitlines due to mixed line endings in some files
+    # so it has only been seen in the headers
+    _data = hex.split("\r\n")
+    # handle a condition where splitlines will not return an empty line, but split() will
+    if _data[-1] == "":
+        _data = _data[:-1]
+    for lineno, line in enumerate(_data, start=1):
         if line.startswith("*"):  # comment
             _comments.append(line)
             header_len = lineno
