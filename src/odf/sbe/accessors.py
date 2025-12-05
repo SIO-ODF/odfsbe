@@ -51,7 +51,7 @@ class SBEAccessor(Mapping):
             )
 
         # just prepare the header
-        header = "\r\n".join(_hex.attrs["header"].splitlines())
+        header = _hex.attrs["header"]
 
         # construct a dict that maps scan count to hex string
         # the hex_data is made as one big string all at once (very fast)
@@ -73,7 +73,7 @@ class SBEAccessor(Mapping):
             scan = row + 1
             list_out.append(data_dict[scan])
         # The final "" here makes an empty line at the end of the file
-        data_out = "\r\n".join([header, *list_out, ""]).encode(
+        data_out = (header + "\r\n".join(list_out) + "\r\n").encode(
             _hex.attrs.get("charset", "utf8")
         )
         # do the output check but only if there is a Content-MD5 attr

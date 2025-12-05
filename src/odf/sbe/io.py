@@ -58,18 +58,25 @@ def hex_to_dataset(
     _comments = []  #   hex header comments written by deck box/SeaSave
     out_idx = []  #   zero indexed "row" of the hex line, used for reconsturction of bad files
     out = []  #   hex bytes out
-    hex = path.read_text(encoding)
+    hex = path.read_text(encoding, newline="")
 
     error_idx = []
     error_lines = []
     linelen = guess_scan_lengths(hex) or 0
     header_len = 0
-    for lineno, line in enumerate(hex.splitlines(), start=1):
-        if line.startswith("*"):  # comment
+    end_seen = False
+    end_in_hex = "*END*" in hex
+    for lineno, line in enumerate(hex.splitlines(True), start=1):
+        if (end_in_hex and not end_seen) or (
+            not end_in_hex and line.startswith("*")
+        ):  # comment
             _comments.append(line)
             header_len = lineno
+            if "*END*" in line:
+                end_seen = True
             continue
 
+        line = line.strip()
         if len(line) != linelen:
             if errors == "raise":
                 raise ValueError(f"invalid scan lengths line: {lineno}")
@@ -82,7 +89,7 @@ def hex_to_dataset(
 
         out_idx.append(lineno - header_len)
         out.append([*bytes.fromhex(line)])
-    header = "\n".join(_comments)
+    header = "".join(_comments)
     data = np.array(out, dtype=np.uint8)
 
     data_array = xr.DataArray(
