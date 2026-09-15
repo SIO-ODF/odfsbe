@@ -10,6 +10,7 @@ Functions
 .. autoapisummary::
 
    sbe.tests.test_io.test_out
+   sbe.tests.test_io.test_read_hex_older
    sbe.tests.test_io.test_read_hex
 
 
@@ -17,6 +18,8 @@ Module Contents
 ---------------
 
 .. py:function:: test_out()
+
+.. py:function:: test_read_hex_older(tmp_path)
 
 .. py:function:: test_read_hex(tmp_path)
 

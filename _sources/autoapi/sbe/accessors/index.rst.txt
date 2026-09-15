@@ -47,14 +47,23 @@ Module Contents
    .. py:method:: to_xmlcon(path: str | os.PathLike | None = None, check=True)
 
 
+   .. py:method:: to_con(path: str | os.PathLike | None = None, check=True)
+
+
    .. py:method:: to_bl(path: str | os.PathLike | None = None, check=True)
+
+
+   .. py:method:: to_mrk(path: str | os.PathLike | None = None, check=True)
+
+
+   .. py:method:: to_nav(path: str | os.PathLike | None = None, check=True)
 
 
    .. py:method:: all_to_dir(path: str | os.PathLike, check=True)
 
       Write all possible output files to path
 
-      Given some path to a directory, will export all the files (hex, xmlcon, bl, hdr) using their input filenames.
+      Given some path to a directory, will export all the files (hex, xmlcon, bl, hdr, nav, mrk) using their input filenames.
 
 
 
