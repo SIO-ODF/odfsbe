@@ -5,6 +5,7 @@ import xarray as xr
 import odf.sbe.accessors  # noqa: F401
 import odf.sbe.io as odf_io
 import odf.sbe.tests.data as test_data
+import odf.sbe.tests.data.HLY0904 as hly_data
 
 
 def test_out():
@@ -14,6 +15,24 @@ def test_out():
         expected = fi.read_bytes()
 
     assert ds.sbe.to_hex() == expected
+
+
+def test_read_hex_older(tmp_path):
+    with path(hly_data, "047.hex") as fi:
+        ds = odf_io.read_hex(fi)
+
+    assert "nav" in ds
+    assert "con" in ds
+    assert "xmlcon" not in ds
+    assert "mrk" not in ds
+
+    ds.sbe.all_to_dir(tmp_path)
+
+    assert (tmp_path / "047.bl").exists()
+    assert (tmp_path / "047.CON").exists()
+    assert (tmp_path / "047.hdr").exists()
+    assert (tmp_path / "047.hex").exists()
+    assert (tmp_path / "047.NAV").exists()
 
 
 def test_read_hex(tmp_path):

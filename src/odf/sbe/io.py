@@ -155,16 +155,22 @@ def read_hex(path, errors: ERRORS = "store", content_md5=True) -> xr.Dataset:
     hex_path = list(root.glob(path.name, case_sensitive=False))
 
     xmlcon_name = Path(path.name).with_suffix(".xmlcon")
+    con_name = Path(path.name).with_suffix(".con")
     bl_name = Path(path.name).with_suffix(".bl")
     hdr_name = Path(path.name).with_suffix(".hdr")
     mrk_name = Path(path.name).with_suffix(".mrk")
+    nav_name = Path(path.name).with_suffix(".nav")
 
     xmlcon_path = list(root.glob(str(xmlcon_name), case_sensitive=False))
+    con_path = list(root.glob(str(con_name), case_sensitive=False))
     bl_path = list(root.glob(str(bl_name), case_sensitive=False))
     hdr_path = list(root.glob(str(hdr_name), case_sensitive=False))
     mrk_path = list(root.glob(str(mrk_name), case_sensitive=False))
+    nav_path = list(root.glob(str(nav_name), case_sensitive=False))
 
     # TODO: handle more then 1 found file for the above
+    # TODO: are con <-> xmlcon mutually exclusive?
+    # TODO: are mrk <-> nav mutually exclusive?
 
     input_datasets = []
     if len(hex_path) == 1:
@@ -177,6 +183,11 @@ def read_hex(path, errors: ERRORS = "store", content_md5=True) -> xr.Dataset:
             string_loader(
                 xmlcon_path[0], "xmlcon", encoding="CP437", content_md5=content_md5
             )
+        )
+
+    if len(con_path) == 1:
+        input_datasets.append(
+            string_loader(con_path[0], "con", encoding="CP437", content_md5=content_md5)
         )
 
     if len(bl_path) == 1:
@@ -192,6 +203,11 @@ def read_hex(path, errors: ERRORS = "store", content_md5=True) -> xr.Dataset:
     if len(mrk_path) == 1:
         input_datasets.append(
             string_loader(mrk_path[0], "mrk", encoding="CP437", content_md5=content_md5)
+        )
+
+    if len(nav_path) == 1:
+        input_datasets.append(
+            string_loader(nav_path[0], "nav", encoding="CP437", content_md5=content_md5)
         )
 
     return xr.merge(input_datasets)

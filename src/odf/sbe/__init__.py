@@ -2,9 +2,11 @@
 filename to var mapping
 *.hex -> "hex" - uint8 decoded hex data (for compression)
 *.xmlcon -> "xmlcon" - stored char data
+*.con -> "con" - stored char data
 *.bl -> "bl" - stored char data
 *.hdr -> "hdr" - stored char data
 *.mrk -> "mrk" - stored char data
+*.nav -> "nav" - stored char data
 
 If the hex has bad scans and errors is set to "store" (the default)
 "hex_errors" -> string of the bad lines

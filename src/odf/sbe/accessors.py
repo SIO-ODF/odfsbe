@@ -104,13 +104,22 @@ class SBEAccessor(Mapping):
     def to_xmlcon(self, path: str | PathLike | None = None, check=True):
         return self._str_to_bytes_or_file("xmlcon", path=path, check=check)
 
+    def to_con(self, path: str | PathLike | None = None, check=True):
+        return self._str_to_bytes_or_file("con", path=path, check=check)
+
     def to_bl(self, path: str | PathLike | None = None, check=True):
         return self._str_to_bytes_or_file("bl", path=path, check=check)
+
+    def to_mrk(self, path: str | PathLike | None = None, check=True):
+        return self._str_to_bytes_or_file("mrk", path=path, check=check)
+
+    def to_nav(self, path: str | PathLike | None = None, check=True):
+        return self._str_to_bytes_or_file("nav", path=path, check=check)
 
     def all_to_dir(self, path: str | PathLike, check=True):
         """Write all possible output files to path
 
-        Given some path to a directory, will export all the files (hex, xmlcon, bl, hdr) using their input filenames.
+        Given some path to a directory, will export all the files (hex, xmlcon, bl, hdr, nav, mrk) using their input filenames.
         """
         _path = Path(path)
         if not _path.is_dir():
@@ -119,10 +128,16 @@ class SBEAccessor(Mapping):
             self.to_hex(_path, check=check)
         if "xmlcon" in self._obj:
             self.to_xmlcon(_path, check=check)
+        if "con" in self._obj:
+            self.to_con(_path, check=check)
         if "hdr" in self._obj:
             self.to_hdr(_path, check=check)
         if "bl" in self._obj:
             self.to_bl(_path, check=check)
+        if "mrk" in self._obj:
+            self.to_mrk(_path, check=check)
+        if "nav" in self._obj:
+            self.to_nav(_path, check=check)
 
     def _xmlcon(self):
         return parse_xmlcon(self._obj.xmlcon)
