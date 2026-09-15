@@ -126,7 +126,7 @@ def parse_xmlcon(xml):
                 for coef in md_entry:
                     # print(coef.tag, coef.attrib, coef.text)
                     coefs[coef.tag.strip()] = coef.text.strip()
-                if md_entry.tag in meta.keys():
+                if md_entry.tag in meta:
                     meta[md_entry.tag.strip() + "2"] = coefs
                 else:
                     meta[md_entry.tag.strip()] = coefs

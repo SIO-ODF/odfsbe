@@ -32,13 +32,13 @@ fallback_version = "9999"
 dev = [
     "furo>=2024.8.6",
     "ipykernel>=6.29.5",
-    "mypy>=1.15.0",
+    "mypy>=2.3.1",
     "myst-parser>=4.0.1",
     "pandas-stubs>=2.2.3.241126",
     "pre-commit>=4.1.0",
     "pytest>=8.3.4",
     "pytest-cov>=6.0.0",
-    "ruff>=0.9.6",
+    "ruff>=0.16.7",
     "sphinx>=8.2.1",
     "sphinx-autoapi>=3.6.0",
 ]
